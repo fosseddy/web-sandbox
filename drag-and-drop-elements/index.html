@@ -4,21 +4,16 @@
     <meta charset="UTF-8" />
     <title>Drag and Drop Elements</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { display: flex; flex-direction: column; align-items: center; }
-        ul {
-            list-style: none;
-            border: 1px solid black;
-            width: 200px;
-            padding: 10px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        li {
-            border: 1px solid red;
-            margin-bottom: 5px;
-            padding: 10px;
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        li:last-child { margin-bottom: 0; }
-
         .box {
             border: 1px solid black;
             width: 140px;
@@ -27,32 +22,28 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            margin-right: 2rem;
+        }
+        .box:last-child {
+            margin-right: 0;
         }
         .box-content {
             border: 1px solid red;
             padding: 10px;
+            cursor: grab;
         }
     </style>
 </head>
 <body>
     <div style="display: flex; margin: 2rem 0;">
-        <div class="box" style="margin-right: 2rem;">
-            <div class="box-content">
+        <div class="box">
+            <div id="drag-item" class="box-content" draggable="true">
                 <p>Hello,World!</p>
             </div>
         </div>
-
         <div class="box"></div>
-    </div>
-
-    <div>
-        <ul>
-            <li>Hello</li>
-            <li>World</li>
-            <li>How</li>
-            <li>Are</li>
-            <li>You</li>
-        </ul>
+        <div class="box"></div>
+        <div class="box"></div>
     </div>
 
     <script src="./main.js"></script>
