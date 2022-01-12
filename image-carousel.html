@@ -28,6 +28,7 @@
             <image class="img" src="https://picsum.photos/200/100?random=3" />
         </div>
 
+        <button id="btn-prev">prev</button>
         <button id="btn-next">next</button>
     </div>
 
@@ -40,13 +41,21 @@
             }
         });
 
-        document.querySelector("#btn-next")
-            .addEventListener("click", event => {
-                images[activeIndex].classList.remove("active");
-                activeIndex = (activeIndex + 1) % images.length;
-                images[activeIndex].classList.add("active");
-            });
+        function mod(v, n) {
+            return ((v % n) + n) % n;
+        }
 
+        function changeImage(direction) {
+            images[activeIndex].classList.remove("active");
+            activeIndex = mod(activeIndex + direction, images.length);
+            images[activeIndex].classList.add("active");
+        }
+
+        document.querySelector("#btn-next")
+            .addEventListener("click", _ => changeImage(1));
+
+        document.querySelector("#btn-prev")
+            .addEventListener("click", _ => changeImage(-1));
     </script>
 </body>
 </html>
