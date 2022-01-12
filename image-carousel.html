@@ -9,23 +9,44 @@
             margin: 0;
             box-sizing: border-box;
         }
+
+        .img {
+            position: absolute;
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div>
-        <button>left</button>
-
-        <div>
-            <image src="https://picsum.photos/200/100?random=1" />
-            <image src="https://picsum.photos/200/100?random=2" />
-            <image src="https://picsum.photos/200/100?random=3" />
+        <div style="position: relative; height: 100px;">
+            <image class="img active" src="https://picsum.photos/200/100?random=1" />
+            <image class="img" src="https://picsum.photos/200/100?random=2" />
+            <image class="img" src="https://picsum.photos/200/100?random=3" />
         </div>
 
-        <button>right</button>
+        <button id="btn-next">next</button>
     </div>
 
     <script>
-        console.log("hello, world");
+        const images = document.querySelectorAll(".img");
+        let activeIndex = 0;
+        images.forEach((img, i) => {
+            if (img.classList.contains("active")) {
+                activeIndex = i;
+            }
+        });
+
+        document.querySelector("#btn-next")
+            .addEventListener("click", event => {
+                images[activeIndex].classList.remove("active");
+                activeIndex = (activeIndex + 1) % images.length;
+                images[activeIndex].classList.add("active");
+            });
+
     </script>
 </body>
 </html>
