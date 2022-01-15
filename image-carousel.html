@@ -43,27 +43,33 @@
             width: 100%;
             position: absolute;
             list-style: none;
-            border: 1px solid blue;
-            bottom: 5%;
+            bottom: 3%;
             display: flex;
             justify-content: center;
         }
 
         li {
             color: white;
-            background-color: red;
-            width: 12px;
-            height: 12px;
+            background-color: black;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             margin-right: 5px;
+            cursor: pointer;
+            opacity: .3;
         }
 
         li:last-child {
             margin-right: 0;
         }
 
+        li:hover {
+            opacity: 1;
+        }
+
         li.active {
-            border: 3px solid red;
+            opacity: 1;
+            border: 4px solid black;
             background-color: white;
         }
 
@@ -88,17 +94,10 @@
             <image src="https://picsum.photos/600/400?random=1" />
             <image src="https://picsum.photos/600/400?random=2" />
             <image src="https://picsum.photos/600/400?random=3" />
-
             <image src="https://picsum.photos/600/400?random=4" />
-            <image src="https://picsum.photos/600/400?random=5" />
-            <image src="https://picsum.photos/600/400?random=6" />
         </div>
 
         <ol id="carousel-controls">
-            <li class="active"></li>
-            <li></li>
-            <li></li>
-            <li></li>
         </ol>
 
         <button id="btn-prev" style="left: 5%"><</button>
@@ -106,31 +105,64 @@
     </div>
 
     <script>
-        const carouselControls = document.querySelector("#carouse-controls");
-        const imagesContainer = document.querySelector(".carousel-imgs");
+        const carouselControls = document.querySelector("#carousel-controls");
         const images = document.querySelectorAll(".carousel-imgs img");
+
+        for  (let i = 0; i < images.length; i++) {
+            carouselControls.innerHTML += `
+                <li ${i == 0 ? 'class="active"' : ""}></li>
+            `;
+        }
+
+        const dots = carouselControls.querySelectorAll("li");
+        const imagesContainer = document.querySelector(".carousel-imgs");
 
         const imageWidth = 600;
         const firstImageOffset = 0;
         const lastImageOffset = imageWidth * (images.length - 1) * -1;
 
         let offset = firstImageOffset;
+        let activeIndex = 0;
+
+        dots.forEach((li, i) => {
+            li.addEventListener("click", () => {
+                offset = imageWidth * i * -1;
+                imagesContainer.style.transform = `translateX(${offset}px)`;
+                activeIndex = i;
+                setActiveClass();
+            });
+        });
 
         document.querySelector("#btn-next").addEventListener("click", () => {
             offset -= imageWidth;
+            activeIndex += 1;
             if (offset < lastImageOffset) {
                 offset = firstImageOffset;
+                activeIndex = 0;
             }
             imagesContainer.style.transform = `translateX(${offset}px)`;
+            setActiveClass();
         });
 
         document.querySelector("#btn-prev").addEventListener("click", () => {
             offset += imageWidth;
+            activeIndex -= 1;
             if (offset > firstImageOffset) {
                 offset = lastImageOffset;
+                activeIndex = images.length - 1;
             }
             imagesContainer.style.transform = `translateX(${offset}px)`;
+            setActiveClass();
         });
+
+        function setActiveClass() {
+            dots.forEach((li, i) => {
+                dots[i].classList.remove("active");
+                if (i == activeIndex) {
+                    dots[i].classList.add("active");
+                }
+            });
+        }
     </script>
 </body>
 </html>
