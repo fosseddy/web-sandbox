@@ -39,6 +39,34 @@
             opacity: 1;
         }
 
+        ol {
+            width: 100%;
+            position: absolute;
+            list-style: none;
+            border: 1px solid blue;
+            bottom: 5%;
+            display: flex;
+            justify-content: center;
+        }
+
+        li {
+            color: white;
+            background-color: red;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        li:last-child {
+            margin-right: 0;
+        }
+
+        li.active {
+            border: 3px solid red;
+            background-color: white;
+        }
+
         .carousel-container {
             position: relative;
             width: 600px;
@@ -60,31 +88,48 @@
             <image src="https://picsum.photos/600/400?random=1" />
             <image src="https://picsum.photos/600/400?random=2" />
             <image src="https://picsum.photos/600/400?random=3" />
+
+            <image src="https://picsum.photos/600/400?random=4" />
+            <image src="https://picsum.photos/600/400?random=5" />
+            <image src="https://picsum.photos/600/400?random=6" />
         </div>
+
+        <ol id="carousel-controls">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ol>
 
         <button id="btn-prev" style="left: 5%"><</button>
         <button id="btn-next" style="right: 5%">></button>
     </div>
 
     <script>
-        const images = document.querySelector(".carousel-imgs");
-        const width = 600;
-        let offset = 0;
+        const carouselControls = document.querySelector("#carouse-controls");
+        const imagesContainer = document.querySelector(".carousel-imgs");
+        const images = document.querySelectorAll(".carousel-imgs img");
+
+        const imageWidth = 600;
+        const firstImageOffset = 0;
+        const lastImageOffset = imageWidth * (images.length - 1) * -1;
+
+        let offset = firstImageOffset;
 
         document.querySelector("#btn-next").addEventListener("click", () => {
-            offset -= width;
-            if (offset < width * 2 * -1) {
-                offset = 0;
+            offset -= imageWidth;
+            if (offset < lastImageOffset) {
+                offset = firstImageOffset;
             }
-            images.style.transform = `translateX(${offset}px)`;
+            imagesContainer.style.transform = `translateX(${offset}px)`;
         });
 
         document.querySelector("#btn-prev").addEventListener("click", () => {
-            offset += width;
-            if (offset > 0) {
-                offset = width * 2 * -1;
+            offset += imageWidth;
+            if (offset > firstImageOffset) {
+                offset = lastImageOffset;
             }
-            images.style.transform = `translateX(${offset}px)`;
+            imagesContainer.style.transform = `translateX(${offset}px)`;
         });
     </script>
 </body>
