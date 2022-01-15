@@ -128,12 +128,14 @@
             li.addEventListener("click", () => {
                 offset = imageWidth * i * -1;
                 imagesContainer.style.transform = `translateX(${offset}px)`;
+                dots[activeIndex].classList.remove("active");
+                dots[i].classList.add("active");
                 activeIndex = i;
-                setActiveClass();
             });
         });
 
         document.querySelector("#btn-next").addEventListener("click", () => {
+            dots[activeIndex].classList.remove("active");
             offset -= imageWidth;
             activeIndex += 1;
             if (offset < lastImageOffset) {
@@ -141,10 +143,11 @@
                 activeIndex = 0;
             }
             imagesContainer.style.transform = `translateX(${offset}px)`;
-            setActiveClass();
+            dots[activeIndex].classList.add("active");
         });
 
         document.querySelector("#btn-prev").addEventListener("click", () => {
+            dots[activeIndex].classList.remove("active");
             offset += imageWidth;
             activeIndex -= 1;
             if (offset > firstImageOffset) {
@@ -152,17 +155,8 @@
                 activeIndex = images.length - 1;
             }
             imagesContainer.style.transform = `translateX(${offset}px)`;
-            setActiveClass();
+            dots[activeIndex].classList.add("active");
         });
-
-        function setActiveClass() {
-            dots.forEach((li, i) => {
-                dots[i].classList.remove("active");
-                if (i == activeIndex) {
-                    dots[i].classList.add("active");
-                }
-            });
-        }
     </script>
 </body>
 </html>
