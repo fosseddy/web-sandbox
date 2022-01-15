@@ -10,52 +10,59 @@
             box-sizing: border-box;
         }
 
-        .img {
-            position: absolute;
-            display: none;
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .active {
-            display: block;
+        .carousel-container {
+            height: 400px;
+            width: 600px;
+            overflow: hidden;
+        }
+
+        .carousel-imgs {
+            display: flex;
+            transition: all .5s ease-out;
         }
     </style>
 </head>
 <body>
-    <div>
-        <div style="position: relative; height: 100px;">
-            <image class="img active" src="https://picsum.photos/200/100?random=1" />
-            <image class="img" src="https://picsum.photos/200/100?random=2" />
-            <image class="img" src="https://picsum.photos/200/100?random=3" />
+    <div class="carousel-container">
+        <div class="carousel-imgs">
+            <image src="https://picsum.photos/600/400?random=1" />
+            <image src="https://picsum.photos/600/400?random=2" />
+            <image src="https://picsum.photos/600/400?random=3" />
         </div>
+    </div>
 
+    <div>
         <button id="btn-prev">prev</button>
         <button id="btn-next">next</button>
     </div>
 
     <script>
-        const images = document.querySelectorAll(".img");
-        let activeIndex = 0;
-        images.forEach((img, i) => {
-            if (img.classList.contains("active")) {
-                activeIndex = i;
+        const images = document.querySelector(".carousel-imgs");
+        const width = 600;
+        let offset = 0;
+
+        document.querySelector("#btn-next").addEventListener("click", () => {
+            offset -= width;
+            if (offset < width * 2 * -1) {
+                offset = 0;
             }
+            images.style.transform = `translateX(${offset}px)`;
         });
 
-        function mod(v, n) {
-            return ((v % n) + n) % n;
-        }
-
-        function changeImage(direction) {
-            images[activeIndex].classList.remove("active");
-            activeIndex = mod(activeIndex + direction, images.length);
-            images[activeIndex].classList.add("active");
-        }
-
-        document.querySelector("#btn-next")
-            .addEventListener("click", () => changeImage(1));
-
-        document.querySelector("#btn-prev")
-            .addEventListener("click", () => changeImage(-1));
+        document.querySelector("#btn-prev").addEventListener("click", () => {
+            offset += width;
+            if (offset > 0) {
+                offset = width * 2 * -1;
+            }
+            images.style.transform = `translateX(${offset}px)`;
+        });
     </script>
 </body>
 </html>
