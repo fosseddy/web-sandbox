@@ -1,7 +1,16 @@
-doctype html
-html
-    head
-        title Local Library
+extends ../base
 
-    body
-        h1 This is Catalog Home Page
+block content
+    h1 Local Library Home
+    p.
+        Welcome to #[em LocalLibrary], a very basic PHP Symfony website
+        developed as a practice exercise to learn the framework.
+
+    section
+        h2 Dynamic content
+        p The library has the following record counts:
+        ul
+            li #[strong Books:] 1</li>
+            li #[strong Authors:] 2</li>
+            li #[strong Genres:] 3</li>
+            li #[strong Users:] 4</li>
