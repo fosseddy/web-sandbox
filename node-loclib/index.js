@@ -3,8 +3,10 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => {
-    res.send("<h1>hello, world</h1>");
-});
+app.use(express.urlencoded({ extended: false }));
+
+app.set("view engine", "pug");
+
+app.use("/catalog", require("./src/catalog/router"));
 
 app.listen(port, () => console.log("Server is listening on port:", port));
