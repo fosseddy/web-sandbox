@@ -15,24 +15,24 @@ html(lang="en")
             div
                 nav
                     ul
-                        li #[a(href="#") Home]
-                        li #[a(href="#") All books]
-                        li #[a(href="#") All authors]
-                        li #[a(href="#") All genres]
+                        li: a(href="#") Home
+                        li: a(href="#") All books
+                        li: a(href="#") All authors
+                        li: a(href="/catalog/genre") All genres
 
                     hr
 
                     ul
-                        li #[a(href="#") Create new genre]
-                        li #[a(href="#") Create new author]
-                        li #[a(href="#") Create new book]
+                        li: a(href="#") Create new genre
+                        li: a(href="#") Create new author
+                        li: a(href="#") Create new book
 
                     hr
 
                     ul
                         li User:
                         li Fosseddy (admin)
-                        li #[a(href="#") Logout]
+                        li: a(href="#") Logout
 
             main
                 block content
