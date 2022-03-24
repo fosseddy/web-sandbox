@@ -1,7 +1,10 @@
-import { addGenre, getGenres, updateGenre, removeGenre } from "./router.mjs";
+import { conn } from "../app.mjs";
 
-export function indexView(req, res) {
-    res.render("genre/index", { genres: getGenres() });
+export async function indexView(req, res) {
+    const [genres] = await conn.execute("SELECT * FROM genre")
+        .catch(console.error);
+
+    res.render("genre/index", { genres });
 }
 
 export function showView(req, res) {
@@ -20,7 +23,7 @@ export function removeView(req, res) {
     res.render("genre/delete", { genre: req.genre });
 }
 
-export function create(req, res) {
+export async function create(req, res) {
     const { name } = req.body;
     let errors = {};
 
@@ -36,12 +39,13 @@ export function create(req, res) {
         });
     }
 
-    addGenre(name);
+    await conn.execute("INSERT INTO genre (name) VALUES (?)", [name])
+        .catch(console.error);
 
     res.redirect("/catalog/genre");
 }
 
-export function update(req, res) {
+export async function update(req, res) {
     const { name } = req.body;
     let errors = {};
 
@@ -57,18 +61,23 @@ export function update(req, res) {
         });
     }
 
-    updateGenre(req.params.id, name);
+    await conn.execute(
+        "UPDATE genre SET name = ? WHERE id = ?",
+        [name, req.params.id]
+    ).catch(console.error);
+
     res.redirect(`/catalog/genre/${req.params.id}`);
 }
 
-export function remove(req, res) {
+export async function remove(req, res) {
     const { id } = req.body;
 
     if (id != req.params.id) {
         throw new Error(`Genre with id ${id} does not exist`);
     }
 
-    removeGenre(id);
+    await conn.execute("DELETE FROM genre WHERE id = ?", [id])
+        .catch(console.error);
 
     res.redirect("/catalog/genre");
 }

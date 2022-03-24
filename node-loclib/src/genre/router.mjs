@@ -1,34 +1,6 @@
 import { Router } from "express";
-
-import * as controller from "./controller.mjs";
 import { findGenre } from "./middleware.mjs";
-
-let id = 1;
-let genres = [
-    { id: id++, name: "Poetry" },
-    { id: id++, name: "Science fiction" },
-    { id: id++, name: "Classic" }
-];
-
-export function addGenre(name) {
-    genres.push({ id: id++, name });
-}
-
-export function getGenres() {
-    return genres;
-}
-
-export function removeGenre(id) {
-    genres = genres.filter(g => g.id != id);;
-}
-
-export function updateGenre(id, name) {
-    genres = genres.map(g => {
-        if (g.id != id) return g;
-        g.name = name;
-        return g;
-    });
-}
+import * as controller from "./controller.mjs";
 
 const router = Router();
 
