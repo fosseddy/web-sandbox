@@ -1,0 +1,8 @@
+form(method="POST")
+    div
+        if _form.errors.name
+            ul: li= _form.errors.name
+
+        input(placeholder="Genre name...", name="name" value=_form.name)
+
+    button(type="submit") Submit

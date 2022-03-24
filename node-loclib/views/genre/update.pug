@@ -3,13 +3,5 @@ extends /base
 block content
     h1 Update Genre
 
-    form(method="POST")
-        div
-            - const err = !!form?.errors.name ?? false;
-            if err
-                ul: li= form.errors.name
-
-            - const val = form?.name ?? genre.name
-            input(placeholder="Genre name...", name="name" value=val)
-
-        button(type="submit") Submit
+    - const _form = form ?? { name: genre.name, errors: {} };
+    include /genre/_form
