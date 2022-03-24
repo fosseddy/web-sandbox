@@ -1,10 +1,10 @@
 {
   "name": "loclib",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-      "start": "node index.js",
-      "dev": "nodemon index.js"
+      "start": "node index.mjs",
+      "dev": "nodemon index.mjs"
   },
   "dependencies": {
     "express": "^4.17.3",
