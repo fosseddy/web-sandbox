@@ -1,9 +1,7 @@
-import { conn } from "../app.mjs";
+import * as GenreModel from "./model.mjs";
 
 export async function indexView(req, res) {
-    const [genres] = await conn.execute("SELECT * FROM genre")
-        .catch(console.error);
-
+    const genres = await GenreModel.findAll();
     res.render("genre/index", { genres });
 }
 
@@ -39,10 +37,9 @@ export async function create(req, res) {
         });
     }
 
-    await conn.execute("INSERT INTO genre (name) VALUES (?)", [name])
-        .catch(console.error);
+    const id = await GenreModel.insert({ name });
 
-    res.redirect("/catalog/genre");
+    res.redirect(`/catalog/genre/${id}`);
 }
 
 export async function update(req, res) {
@@ -61,10 +58,7 @@ export async function update(req, res) {
         });
     }
 
-    await conn.execute(
-        "UPDATE genre SET name = ? WHERE id = ?",
-        [name, req.params.id]
-    ).catch(console.error);
+    await GenreModel.update(req.params.id, { name });
 
     res.redirect(`/catalog/genre/${req.params.id}`);
 }
@@ -76,8 +70,7 @@ export async function remove(req, res) {
         throw new Error(`Genre with id ${id} does not exist`);
     }
 
-    await conn.execute("DELETE FROM genre WHERE id = ?", [id])
-        .catch(console.error);
+    await GenreModel.remove(id);
 
     res.redirect("/catalog/genre");
 }

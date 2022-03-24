@@ -1,19 +1,17 @@
 import assert from "assert/strict";
-import { conn } from "../app.mjs";
+import * as GenreModel from "./model.mjs";
 
 export async function findGenre(req, res, next) {
     assert(req.params.id, "middleware used on route with no :id param?");
 
-    const [rows] = await conn.execute(
-        "SELECT * FROM genre WHERE id = ?",
-        [req.params.id]
-    ).catch(console.error);
+    const { id } = req.params;
+    const genre = await GenreModel.find(id);
 
-    if (!rows.length) {
-        throw new Error(`Genre with id ${req.params.id} not found`);
+    if (!genre) {
+        throw new Error(`Genre with id ${id} not found`);
     }
 
-    req.genre = rows[0];
+    req.genre = genre;
     next();
 }
 
