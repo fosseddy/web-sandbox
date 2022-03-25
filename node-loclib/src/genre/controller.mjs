@@ -1,4 +1,4 @@
-import * as GenreModel from "./model.mjs";
+import { GenreModel } from "./model.mjs";
 
 export async function indexView(req, res) {
     const genres = await GenreModel.findAll();
