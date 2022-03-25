@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.mjs",
   "scripts": {
-      "start": "node index.mjs",
-      "dev": "nodemon index.mjs"
+    "start": "node index.mjs",
+    "dev": "nodemon index.mjs --exec 'npm run lint && node'",
+    "lint": "eslint . --ext .js --ext .mjs"
   },
   "dependencies": {
     "express": "^4.17.3",
@@ -12,6 +13,7 @@
     "pug": "^3.0.2"
   },
   "devDependencies": {
+    "eslint": "^8.11.0",
     "nodemon": "^2.0.15"
   }
 }
