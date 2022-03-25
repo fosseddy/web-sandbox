@@ -1,9 +1,13 @@
 import { Router } from "express";
+import { GenreModel } from "../genre/model.mjs";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-    res.render("catalog/index");
+router.get("/", async (req, res) => {
+    let counts = {};
+    counts.genre = await GenreModel.count();
+
+    res.render("catalog/index", { counts });
 });
 
 export { router };
