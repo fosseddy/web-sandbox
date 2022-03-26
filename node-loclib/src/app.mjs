@@ -1,6 +1,6 @@
 import express from "express";
-import { router as catalogRouter } from "./catalog/router.mjs";
-import { router as genreRouter } from "./genre/router.mjs";
+import { router as catalogRouter } from "#components/catalog/router.mjs";
+import { router as genreRouter } from "#components/genre/router.mjs";
 
 const app = express();
 

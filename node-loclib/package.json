@@ -7,6 +7,10 @@
     "dev": "nodemon index.mjs --exec 'npm run lint && node'",
     "lint": "eslint . --ext .js --ext .mjs"
   },
+  "imports": {
+      "#components/*": "./src/components/*",
+      "#src/*": "./src/*"
+  },
   "dependencies": {
     "express": "^4.17.3",
     "mysql2": "^2.3.3",
