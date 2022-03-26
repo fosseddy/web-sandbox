@@ -25,5 +25,5 @@ await conn.query(
     ")"
 ).catch(console.error);
 
-console.log("All tabels are successfully created...");
+console.log("All tables are successfully created...");
 process.exit(0);
