@@ -1,6 +1,7 @@
 import express from "express";
 import { router as catalogRouter } from "#components/catalog/router.mjs";
 import { router as genreRouter } from "#components/genre/router.mjs";
+import { router as authorRouter } from "#components/author/router.mjs";
 
 const app = express();
 
@@ -11,5 +12,6 @@ app.locals.basedir = app.get("views");
 
 app.use("/catalog", catalogRouter);
 app.use("/catalog/genre", genreRouter);
+app.use("/catalog/author", authorRouter);
 
 export { app };

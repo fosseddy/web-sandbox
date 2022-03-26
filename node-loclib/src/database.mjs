@@ -84,10 +84,3 @@ Model.count = async function () {
 }
 
 export { Model, init, getSocketAddr };
-
-//await conn.query(
-//    "CREATE TABLE IF NOT EXISTS genre (" +
-//        "id INT AUTO_INCREMENT PRIMARY KEY," +
-//        "name VARCHAR(255) NOT NULL" +
-//    ");"
-//).catch(console.error);
