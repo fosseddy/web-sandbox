@@ -41,15 +41,14 @@ Model.find = async function (query) {
 
 Model.update = async function (id, data) {
     let values = [];
-    let tmp = [];
+    let fields = [];
 
     for (const [key, value] of Object.entries(data)) {
-        tmp.push(`${key} = ?`);
+        fields.push(`${key} = ?`);
         values.push(value);
     }
 
-    let s = tmp.join(", ");
-    let query = `UPDATE ${this.table} SET ${s} WHERE id = ?`;
+    let query = `UPDATE ${this.table} SET ${fields.join(", ")} WHERE id = ?`;
     values.push(id);
 
     return conn.execute(query, values);
