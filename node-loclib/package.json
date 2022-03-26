@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node index.mjs",
     "dev": "nodemon index.mjs --exec 'npm run lint && node'",
-    "lint": "eslint . --ext .js --ext .mjs"
+    "lint": "eslint . --ext .js --ext .mjs",
+    "make-database": "node ./scripts/make-database.mjs"
   },
   "imports": {
       "#components/*": "./src/components/*",
