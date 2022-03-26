@@ -1,4 +1,5 @@
 import { GenreModel } from "./model.mjs";
+import { isFormValid } from "#src/validator.mjs";
 
 export async function indexView(req, res) {
     const genres = await GenreModel.findAll();
@@ -10,11 +11,15 @@ export function showView(req, res) {
 }
 
 export function createView(req, res) {
-    res.render("genre/create");
+    res.render("genre/create", {
+        form: { name: "", errors: {} }
+    });
 }
 
 export function updateView(req, res) {
-    res.render("genre/update", { genre: req.genre });
+    res.render("genre/update", {
+        form: { name: req.genre.name, errors: {} }
+    });
 }
 
 export function removeView(req, res) {
@@ -22,44 +27,24 @@ export function removeView(req, res) {
 }
 
 export async function create(req, res) {
-    const { name } = req.body;
-    let errors = {};
+    const { form } = req;
 
-    if (!name || !name.trim()) {
-        errors.name = "Name is required";
-    } else if (name.length < 2 || name.length > 255) {
-        errors.name = "Name must be between 2 and 255 characters long";
+    if (!isFormValid(form)) {
+        return res.render("genre/create", { form });
     }
 
-    if (Object.keys(errors).length) {
-        return res.render("genre/create", {
-            form: { name, errors }
-        });
-    }
-
-    const id = await GenreModel.insert({ name });
-
+    const id = await GenreModel.insert({ name: form.name });
     res.redirect(`/catalog/genre/${id}`);
 }
 
 export async function update(req, res) {
-    const { name } = req.body;
-    let errors = {};
+    const { form } = req;
 
-    if (!name || !name.trim()) {
-        errors.name = "Name is required";
-    } else if (name.length < 2 || name.length > 255) {
-        errors.name = "Name must be between 2 and 255 characters long";
+    if (!isFormValid(form)) {
+        return res.render("genre/update", { form });
     }
 
-    if (Object.keys(errors).length) {
-        return res.render("genre/update", {
-            form: { name, errors }
-        });
-    }
-
-    await GenreModel.update(req.params.id, { name });
-
+    await GenreModel.update(req.params.id, { name: form.name });
     res.redirect(`/catalog/genre/${req.params.id}`);
 }
 
