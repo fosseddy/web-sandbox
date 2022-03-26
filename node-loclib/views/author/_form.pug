@@ -5,6 +5,18 @@ form(method="POST")
         if form.errors.name
             ul: li= form.errors.name
 
-        input(placeholder="Genre name...", name="name" value=form.name)
+        input(placeholder="Firstname Lastname..." name="name" value=form.name)
+
+    div
+        if form.errors.date_of_birth
+            ul: li= form.errors.date_of_birth
+
+        input(type="date" name="date_of_birth" value=form.date_of_birth)
+
+    div
+        if form.errors.date_of_death
+            ul: li= form.errors.date_of_death
+
+        input(type="date" name="date_of_death" value=form.date_of_death)
 
     button(type="submit") Submit

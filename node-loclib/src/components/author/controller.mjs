@@ -12,13 +12,16 @@ export function showView(req, res) {
 
 export function createView(req, res) {
     res.render("author/create", {
-        form: { name: "", errors: {} }
+        form: { name: "", date_of_birth: "", date_of_death: "", errors: {} }
     });
 }
 
 export function updateView(req, res) {
+    const fields = { ...req.author };
+    delete fields.id;
+
     res.render("author/update", {
-        form: { name: req.author.name, errors: {} }
+        form: { ...fields, errors: {} }
     });
 }
 
@@ -33,7 +36,9 @@ export async function create(req, res) {
         return res.render("author/create", { form });
     }
 
-    const id = await AuthorModel.insert({ name: form.name });
+    delete form.errors;
+    const id = await AuthorModel.insert(form);
+
     res.redirect(`/catalog/author/${id}`);
 }
 
@@ -44,7 +49,9 @@ export async function update(req, res) {
         return res.render("author/update", { form });
     }
 
-    await AuthorModel.update(req.params.id, { name: form.name });
+    delete form.errors;
+    await AuthorModel.update(req.params.id, form);
+
     res.redirect(`/catalog/author/${req.params.id}`);
 }
 

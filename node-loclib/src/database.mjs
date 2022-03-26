@@ -6,7 +6,8 @@ async function init() {
     conn = await mysql.createConnection({
         host: "localhost",
         user: "root",
-        database: "local_library"
+        database: "local_library",
+        dateStrings: true
     });
 }
 
