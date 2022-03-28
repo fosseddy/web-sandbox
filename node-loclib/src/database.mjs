@@ -16,6 +16,10 @@ function getSocketAddr() {
     return `${host}:${port}`;
 }
 
+function getConnection() {
+    return conn;
+}
+
 const Model = { table: "" };
 
 Model.create = function(table) {
@@ -84,4 +88,4 @@ Model.count = async function () {
     return count;
 }
 
-export { Model, init, getSocketAddr };
+export { Model, init, getSocketAddr, getConnection };

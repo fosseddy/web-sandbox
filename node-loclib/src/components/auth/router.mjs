@@ -1,11 +1,13 @@
-import crypto from "crypto";
-import { UserModel } from "./model.mjs";
 import { Router } from "express";
 import { isFormValid } from "#src/validator.mjs";
+import * as session from "#src/session.mjs";
+import * as crypto from "#src/crypto.mjs";
+import * as database from "#src/database.mjs";
+import { UserModel } from "./model.mjs";
 
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/login", (req, res) => {
     const form = { username: "", password: "", errors: {} };
     res.render("auth/login", { form });
 });
@@ -40,7 +42,7 @@ router.post("/login", async (req, res) => {
         });
     }
 
-    const hash = (await pbkdf2(password, user.salt)).toString("hex");
+    const hash = (await crypto.pbkdf2(password, user.salt)).toString("hex");
     if (user.password !== hash) {
         errors.username = "Wrong credentials";
         return res.render("auth/login", {
@@ -49,8 +51,8 @@ router.post("/login", async (req, res) => {
     }
 
     // create session
+    await session.create(res, user.id, database.getConnection());
 
-    console.log(user);
     res.redirect("/catalog");
 });
 
@@ -83,31 +85,13 @@ router.post("/register", async (req, res) => {
         });
     }
 
-    const salt = (await randomBytes(16)).toString("hex");
-    password = (await pbkdf2(password, salt)).toString("hex");
+    const salt = (await crypto.randomBytes(16)).toString("hex");
+    password = (await crypto.pbkdf2(password, salt)).toString("hex");
 
     const user = { username, salt, password };
     UserModel.insert(user);
 
     res.redirect("/");
 });
-
-async function randomBytes(len) {
-    return new Promise((resolve, reject) => {
-        crypto.randomBytes(len, (err, buf) => {
-            if (err) reject(err);
-            resolve(buf);
-        });
-    });
-}
-
-async function pbkdf2(pass, salt) {
-    return new Promise((resolve, reject) => {
-        crypto.pbkdf2(pass, salt, 100000, 64, 'sha512', (err, buf) => {
-            if (err) reject(err);
-            resolve(buf);
-        });
-    });
-}
 
 export { router };

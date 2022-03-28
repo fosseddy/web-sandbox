@@ -1,13 +1,28 @@
 import cookie from "cookie";
+import signature from "cookie-signature";
+import { randomBytes } from "#src/crypto.mjs";
 
 const SID = "EXPRESSID";
+const secret = "cosmos";
 
-const database = {
-    "123": { id: 1, username: "Mark" }
-};
+async function create(res, userId, conn) {
+    const sid = (await randomBytes(16)).toString("hex");
+    const ssid = signature.sign(sid, secret);
 
-function session() {
-    return function (req, res, next) {
+    const maxAge = 1000 * 60 * 60 * 24; // 24h
+    const expires = new Date(Date.now() + maxAge);
+
+    res.cookie(SID, ssid, { httpOnly: true, sameSite: true, maxAge, expires });
+
+    // save to database
+    await conn.execute(
+        "INSERT INTO session (id, user_id, expires) VALUES (?, ?, ?)",
+        [sid, userId, expires]
+    );
+}
+
+function session(conn) {
+    return async function (req, res, next) {
         if (req.session) {
             console.warn("SESSION ALREADY EXIST");
             return next();
@@ -23,10 +38,29 @@ function session() {
             return next();
         }
 
-        const sid = cookies[SID];
-        const user = database[sid];
+        const sid = signature.unsign(cookies[SID], secret);
+        let [rows] = await conn.execute(
+            "SELECT * FROM session WHERE id = ?",
+            [sid]
+        );
 
-        if (!user) return next();
+        if (!rows.length) {
+            console.warn(`No session with id ${sid} found`);
+            return next();
+        }
+
+        [rows] = await conn.execute(
+            "SELECT id, username FROM user WHERE id = ?",
+            [rows[0].user_id]
+        );
+
+        if (!rows.length) {
+            console.warn(`No user with id ${rows[0].user_id} and ` +
+                         `session id ${sid} found`);
+            return next();
+        }
+
+        const user = rows[0];
 
         const session = {};
         session.id = sid;
@@ -38,4 +72,4 @@ function session() {
     }
 }
 
-export { session };
+export { session, create };

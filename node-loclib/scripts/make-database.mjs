@@ -34,5 +34,13 @@ await conn.query(
     ")"
 ).catch(console.error);
 
+await conn.query(
+    "CREATE TABLE IF NOT EXISTS session (" +
+        "id VARCHAR(255) PRIMARY KEY," +
+        "user_id INT NOT NULL," +
+        "expires DATETIME NOT NULL" +
+    ")"
+).catch(console.error);
+
 console.log("All tables are successfully created...");
 process.exit(0);
