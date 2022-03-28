@@ -1,8 +1,8 @@
 form(method="POST")
-    div
+    div.form-control
         if form.errors.name
             ul: li= form.errors.name
 
         input(placeholder="Genre name...", name="name" value=form.name)
 
-    button(type="submit") Submit
+    button.form-submit(type="submit") Submit

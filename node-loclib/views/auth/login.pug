@@ -1,0 +1,16 @@
+extends /base
+
+block content
+    h1 Login
+
+    form(method="POST" action="/login")
+        div.form-control
+            // handle error
+            input(name="username" placeholder="Username...")
+
+        div.form-control
+            input(type="password" name="password" placeholder="Password...")
+
+        div.login-form-actions
+            button.form-submit.mr-2(type="submit") Login
+            a(href="/register") Register

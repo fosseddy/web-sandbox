@@ -13,7 +13,7 @@ await conn.query(
     "CREATE TABLE IF NOT EXISTS genre (" +
         "id INT AUTO_INCREMENT PRIMARY KEY," +
         "name VARCHAR(255) NOT NULL" +
-    ");"
+    ")"
 ).catch(console.error);
 
 await conn.query(
@@ -22,6 +22,15 @@ await conn.query(
         "name VARCHAR(255) NOT NULL," +
         "date_of_birth DATE NOT NULL," +
         "date_of_death DATE NOT NULL" +
+    ")"
+).catch(console.error);
+
+await conn.query(
+    "CREATE TABLE IF NOT EXISTS user (" +
+        "id INT AUTO_INCREMENT PRIMARY KEY," +
+        "username VARCHAR(255) NOT NULL UNIQUE," +
+        "password VARCHAR(255) NOT NULL," +
+        "salt VARCHAR(255) NOT NULL" +
     ")"
 ).catch(console.error);
 
