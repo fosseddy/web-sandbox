@@ -5,10 +5,22 @@ block content
 
     form(method="POST")
         div.form-control
-            // handle error
-            input(name="username" placeholder="Username...")
+            if form.errors.username
+                ul: li= form.errors.username
+            input(
+                name="username"
+                placeholder="Username..."
+                value=form.username
+            )
 
         div.form-control
-            input(type="password" name="password" placeholder="Password...")
+            if form.errors.password
+                ul: li= form.errors.password
+            input(
+                type="password"
+                name="password"
+                placeholder="Password..."
+                value=form.password
+            )
 
         button.form-submit(type="submit") Submit
