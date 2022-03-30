@@ -3,7 +3,7 @@ import { router as catalogRouter } from "#components/catalog/router.mjs";
 import { router as genreRouter } from "#components/genre/router.mjs";
 import { router as authorRouter } from "#components/author/router.mjs";
 import { router as authRouter } from "#components/auth/router.mjs";
-import { session } from "#src/session.mjs";
+import { session } from "#components/auth/session.mjs";
 import * as database from "#src/database.mjs";
 
 try {
@@ -18,17 +18,12 @@ const app = express();
 
 app.use(express.static("public"));
 
-app.use(session(database.getConnection()));
+app.use(session({ secret: "cosmos" }));
 
 app.use(express.urlencoded({ extended: false }));
 
 app.set("view engine", "pug");
 app.locals.basedir = app.get("views");
-
-app.use((req, res, next) => {
-    console.log(req.session);
-    next();
-});
 
 app.use("/", authRouter);
 app.use("/catalog", catalogRouter);
