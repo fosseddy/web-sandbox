@@ -8,7 +8,7 @@ function findEntity(model, name = "") {
         const entity = await model.find({ id });
 
         if (!entity) {
-            throw new Error(`Entity(${model.name}) with id ${id} not found`);
+            throw new Error(`Entity(${model.table}) with id ${id} not found`);
         }
 
         name = name || model.table;
