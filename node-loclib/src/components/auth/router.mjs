@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { isFormValid } from "#src/validator.mjs";
-import * as session from "#src/session.mjs";
 import * as crypto from "#src/crypto.mjs";
-import * as database from "#src/database.mjs";
 import { UserModel } from "./model.mjs";
 
 const router = Router();
@@ -50,8 +48,7 @@ router.post("/login", async (req, res) => {
         });
     }
 
-    // create session
-    await session.create(res, user.id, database.getConnection());
+    await req.session.generate(user.id);
 
     res.redirect("/catalog");
 });
@@ -91,7 +88,12 @@ router.post("/register", async (req, res) => {
     const user = { username, salt, password };
     UserModel.insert(user);
 
-    res.redirect("/");
+    res.redirect("/login");
+});
+
+router.get("/logout", async (req, res) => {
+    await req.session.destroy();
+    res.redirect("/login");
 });
 
 export { router };
