@@ -31,10 +31,11 @@ html(lang="en")
 
                     hr
 
-                    ul.nav__user
-                        li User:
-                        li Fosseddy (admin)
-                        li: a(href="#") Logout
+                    if user
+                        ul.nav__user
+                            li User:
+                            li= user.username
+                            li: a(href="/logout") Logout
 
                 main
                     block content
