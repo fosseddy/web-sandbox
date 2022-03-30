@@ -39,6 +39,19 @@ Session.destroy = async function() {
 }
 
 function session(opts) {
+    setInterval(async () => {
+        const sessions = await SessionModel.findAll();
+        let count = 0;
+        for (const sess of sessions) {
+            if (new Date(sess.expires).getTime() <= Date.now()) {
+                console.log("removing session:", sess.id);
+                await SessionModel.remove(sess.id);
+                count++;
+            }
+        }
+        console.log("deleted", count, "sessions");
+    }, 1000 * 60 * 60 * 5);
+
     return async function (req, res, next) {
         if (req.session) {
             console.warn("SESSION ALREADY EXIST");
