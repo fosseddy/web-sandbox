@@ -86,7 +86,7 @@ router.post("/register", async (req, res) => {
     password = (await crypto.pbkdf2(password, salt)).toString("hex");
 
     const user = { username, salt, password };
-    UserModel.insert(user);
+    await UserModel.insert(user);
 
     res.redirect("/login");
 });
