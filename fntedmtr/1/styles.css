@@ -1,0 +1,84 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --color-pink: hsl(322, 100%, 66%);
+  --color-light-pink: hsl(321, 100%, 78%);
+  --color-red: hsl(0, 100%, 63%);
+
+  --color-dark-cyan: hsl(192, 100%, 9%);
+  --color-pale-blue: hsl(207, 100%, 98%);
+}
+
+img {
+  display: block;
+}
+
+body {
+  max-width: 1440px;
+  margin: 5rem auto;
+  padding: 0 2rem;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rem;
+}
+
+header button {
+  font-size: 1rem;
+  color: var(--color-pink);
+
+  background: none;
+
+  padding: .5rem 2rem;
+
+  border: 1px solid var(--color-pink);
+  border-radius: 50px;
+
+  cursor: pointer;
+}
+
+header button:hover {
+  border-color: var(--color-light-pink);
+  color: var(--color-light-pink);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.hero__img {
+  width: 100%;
+}
+
+.hero__subtitle {
+  width: 30%;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.hero button {
+  color: white;
+  background-color: var(--color-pink);
+  border-radius: 50px;
+  border: none;
+  padding: 1rem 4rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 5rem;
+  box-shadow: 0px 5px 10px lightgrey;
+}
+
+.hero button:hover {
+  background-color: var(--color-light-pink);
+}
+
+/* Mobile 375px */
