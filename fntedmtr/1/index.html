@@ -9,90 +9,119 @@
 </head>
 <body>
   <header class="mb-5">
-    <img src="./images/logo.svg" />
-    <button>Try it free</button>
+    <div class="container">
+      <img class="logo" src="./images/logo.svg" />
+      <button>Try it free</button>
+    </div>
   </header>
 
   <section class="hero">
-    <h1>Build The Community Your Fans Will Love</h1>
-    <p class="hero__subtitle">
-      Huddle re-imagines the way we build communities. You have a voice, but so does
-      your audience. Create connections with your users as you engage in genuine discussion.
-    </p>
-    <button>Get Started For Free</button>
-
-    <img class="hero__img" src="./images/screen-mockups.svg" />
-
-    <div>
-      <div>
-        <img src="./images/icon-communities.svg" />
-        <p>1.4k+</p>
-        <p>Communities Formed</p>
+    <div class="container">
+      <div class="hero__call-to-action">
+        <h1>Build The Community Your Fans Will Love</h1>
+        <p>
+          Huddle re-imagines the way we build communities. You have a voice, but so does
+          your audience. Create connections with your users as you engage in genuine discussion.
+        </p>
+        <button class="btn">Get Started For Free</button>
       </div>
 
-      <div>
-        <img src="./images/icon-messages.svg" />
-        <p>2.7m+</p>
-        <p>Messages Sent</p>
+      <img src="./images/screen-mockups.svg" />
+
+      <div class="numbers">
+        <div>
+          <img src="./images/icon-communities.svg" />
+          <p class="numbers__value">1.4k+</p>
+          <p class="numbers__desc">Communities Formed</p>
+        </div>
+
+        <div>
+          <img src="./images/icon-messages.svg" />
+          <p class="numbers__value">2.7m+</p>
+          <p class="numbers__desc">Messages Sent</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Grow Together</h2>
-    <p>Generate meaningful discussions with your audience and build a strong, loyal community.
-      Think of the insightful conversations you miss out on with a feedback form.
-    </p>
-    <img src="./images/illustration-grow-together.svg" />
+  <section class="sell-point sell-point--bg-blue">
+    <div class="container">
+      <div>
+        <h2>Grow Together</h2>
+        <p>Generate meaningful discussions with your audience and build a strong, loyal community.
+          Think of the insightful conversations you miss out on with a feedback form.
+        </p>
+      </div>
+      <img src="./images/illustration-grow-together.svg" />
+    </div>
   </section>
 
-  <section>
-    <h2>Flowing Conversations</h2>
-    <p>
-      You wouldn't paginate a conversation in real life, so why do it online? Our threads have
-      just-in-time loading for a more natural flow.
-    </p>
-    <img src="./images/illustration-flowing-conversation.svg" />
+  <section class="sell-point">
+    <div class="container sell-point--reverse">
+      <div>
+        <h2>Flowing Conversations</h2>
+        <p>
+          You wouldn't paginate a conversation in real life, so why do it online? Our threads have
+          just-in-time loading for a more natural flow.
+        </p>
+      </div>
+      <img src="./images/illustration-flowing-conversation.svg" />
+    </div>
   </section>
 
-  <section>
-    <h2>Your Users</h2>
-    <p>
-      It takes no time at all to integrate Huddle with your app's authentication solution. This means,
-      once signed in to your app, your users can start chatting immediately.
-    </p>
-    <img src="./images/illustration-your-users.svg" />
+  <section class="sell-point sell-point--bg-blue">
+    <div class="container">
+      <div>
+        <h2>Your Users</h2>
+        <p>
+          It takes no time at all to integrate Huddle with your app's authentication solution. This means,
+          once signed in to your app, your users can start chatting immediately.
+        </p>
+      </div>
+      <img src="./images/illustration-your-users.svg" />
+    </div>
   </section>
 
-  <section>
-    <h3>Ready To Build Your Community?</h3>
-    <button>Get Started For Free</button>
+  <section class="cta">
+    <div class="container">
+      <h3>Ready To Build Your Community?</h3>
+      <button class="btn">Get Started For Free</button>
+    </div>
   </section>
 
   <footer>
-    <img src="./images/logo.svg" />
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nulla quam, hendrerit lacinia
-      vestibulum a, ultrices quis sem.
-    </p>
+    <div class="container">
+      <div class="contacts footer__item">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nulla quam, hendrerit lacinia
+          vestibulum a, ultrices quis sem.
+        </p>
 
-    <img src="./images/icon-phone.svg" />
-    <p>Phone: +1-543-123-4567</p>
+        <div class="contacts__item">
+          <img src="./images/icon-phone.svg" />
+          <p>Phone: +1-543-123-4567</p>
+        </div>
 
-    <img src="./images/icon-email.svg" />
-    <p>example@huddle.com</p>
+        <div class="contacts__item">
+          <img src="./images/icon-email.svg" />
+          <p>example@huddle.com</p>
+        </div>
+      </div>
 
 
-    <p>Newsletter</p>
-    <p>
-      To recieve tips on how to grow your community, sign up to our weekly newsletter. We’ll never 
-      send you spam or pass on your email address
-    </p>
+      <div class="footer__news footer__item">
+        <p class="footer__news-header">Newsletter</p>
+        <p>
+          To recieve tips on how to grow your community, sign up to our weekly newsletter. We’ll never 
+          send you spam or pass on your email address
+        </p>
 
-    <form>
-      <input type="text" />
-      <button type="submit">Subscribe</button>
-    </form>
+        <form>
+          <input type="text" />
+          <button class="btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
   </footer>
 </body>
 </html>
