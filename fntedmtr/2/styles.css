@@ -263,5 +263,108 @@ footer ul li {
 footer ul li:last-child {
   margin-bottom: 0;
 }
-/* 1440px  */
+
+@media (max-width: 376px) {
+  h1, h2 {
+    font-size: 1.5em;
+  }
+
+  .logo {
+    max-width: 70px;
+  }
+
+  .cta .container {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+
+  .cta .container div {
+    margin-right: 0;
+  }
+
+  .cta form input {
+    margin-top: 1rem;
+  }
+
+  .cta form input {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .cta form button {
+    width: 100%;
+  }
+
+  .cta img {
+    max-width: 100%;
+  }
+
+  .sell-point::before {
+    background-image: url("./images/bg-curve-mobile.svg");
+    height: 50px;
+  }
+
+  .sell-point .container {
+    flex-direction: column-reverse;
+  }
+
+  .sell-point img:last-child {
+    max-width: 100%;
+  }
+
+  .sell-point__content {
+    text-align: center;
+  }
+
+  .sell-point__content p {
+    width: 100%;
+  }
+
+  .link {
+    justify-content: center;
+    border-bottom: none;
+    width: 100%;
+  }
+
+  .testimonial {
+    text-align: left;
+    width: 100%;
+  }
+
+  .cta-2 .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .cta-2 .container div {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .cta-2 .container form {
+    width: 100%;
+  }
+
+  .cta-2 .container button {
+    width: 100%;
+  }
+
+  footer .container {
+    flex-direction: column;
+  }
+
+  footer .container > div {
+    margin-bottom: 2rem;
+  }
+
+  footer .container ul {
+    margin-bottom: 2rem;
+  }
+
+  footer .container ul:last-child {
+    margin-bottom: 0;
+  }
+}
 /* 375px  */
