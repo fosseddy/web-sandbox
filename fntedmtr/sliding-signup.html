@@ -30,18 +30,10 @@
 
     .container {
       position: relative;
-      width: 80%;
-      max-width: 1000px;
-      height: 50vh;
-      max-height: 500px;
-      min-height: 400px;
+      width: 800px;
+      height: 400px;
       color: white;
-    }
-
-    .bg {
-      background-color: black;
-      opacity: .8;
-      height: 100%;
+      background-color: rgba(0, 0, 0, .8);
     }
 
     .floating {
@@ -61,39 +53,32 @@
       transform: translateX(10%);
     }
 
-    .lhs-content {
+    .content {
       padding: 2rem 4rem;
-      right: 50%;
       z-index: 2;
     }
 
-    .lhs-form {
+    .form {
       color: var(--color-primary);
       padding: 2rem 4rem;
-      right: 50%;
       z-index: 2;
     }
 
-    .rhs-content {
-      padding: 2rem 4rem;
-      left: 50%;
-      z-index: 2;
-    }
-
-    .rhs-form {
-      color: var(--color-primary);
-      padding: 2rem 4rem;
-      left: 50%;
-      z-index: 2;
-    }
-
-    .lhs-form button, .rhs-form button {
+    .form button {
       background-color: var(--color-primary);
       color: white;
       border: none;
       padding: .5rem 3rem;
       border-radius: 5px;
       margin-top: 2rem;
+    }
+
+    .lhs-content, .lhs-form {
+      right: 50%;
+    }
+
+    .rhs-content, .rhs-form {
+      left: 50%;
     }
 
     .display-none {
@@ -125,9 +110,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="bg"></div>
-
-    <div class="display-none floating lhs-content">
+    <div class="display-none floating content lhs-content">
       <h1>Don't have an account?</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -136,7 +119,7 @@
       <button>Sign up</button>
     </div>
 
-    <div class="floating lhs-form">
+    <div class="floating form lhs-form">
       <h1>Sign Up</h1>
       <form>
         <div>
@@ -152,7 +135,7 @@
       </form>
     </div>
 
-    <div class="floating rhs-content">
+    <div class="floating content rhs-content">
       <h1>Have an account?</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -161,7 +144,7 @@
       <button>Login</button>
     </div>
 
-    <div class="display-none floating rhs-form">
+    <div class="display-none floating form rhs-form">
       <h1>Login</h1>
       <form>
         <div>
@@ -190,23 +173,23 @@
 
     const block = document.querySelector(".moving-block");
 
-    login.content.querySelector("button").addEventListener("click", e => {
+    login.content.querySelector("button").addEventListener("click", () => {
       login.content.classList.add("display-none");
-      login.form.classList.remove("display-none");
-
-      signup.content.classList.remove("display-none");
       signup.form.classList.add("display-none");
+
+      login.form.classList.remove("display-none");
+      signup.content.classList.remove("display-none");
 
       block.classList.remove("slide-left");
       block.classList.add("slide-right");
     });
 
-    signup.content.querySelector("button").addEventListener("click", e => {
+    signup.content.querySelector("button").addEventListener("click", () => {
       signup.content.classList.add("display-none");
-      signup.form.classList.remove("display-none");
-
-      login.content.classList.remove("display-none");
       login.form.classList.add("display-none");
+
+      signup.form.classList.remove("display-none");
+      login.content.classList.remove("display-none");
 
       block.classList.remove("slide-right");
       block.classList.add("slide-left");
