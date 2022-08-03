@@ -38,7 +38,7 @@ a {
   text-decoration: none;
 }
 
-h1, h2, button, header.ul {
+h1, h2, button, header ul {
   font-family: "Raleway", sans-serif;
 }
 
@@ -46,13 +46,13 @@ h1, h2, p {
   margin: 1em 0;
 }
 
-h1 {
-  font-size: 1.4rem;
-  line-height: 1.5
+h1, h2 {
+  line-height: 1.5;
+  font-size: 1.5rem;
 }
 
 p, button {
-  font-size: .91rem;
+  font-size: .93rem;
 }
 
 button {
@@ -61,10 +61,11 @@ button {
   border: none;
   color: var(--color-neutral-a);
   font-weight: bold;
-  padding: 1em 4em;
+  padding: 1em 6em;
   border-radius: 50px;
-  background:
-    linear-gradient(to right, var(--color-accent-a), var(--color-accent-b));
+  background: linear-gradient(to right,
+                              var(--color-accent-a),
+                              var(--color-accent-b));
 }
 
 body {
@@ -124,5 +125,20 @@ body {
 }
 
 .grid {
-  display: grid;
+  text-align: center;
+}
+
+.grid__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 5rem;
+}
+
+.grid__item img {
+  max-width: 20%;
+}
+
+.grid__item:not(:last-child) {
+  border: 1px solid red;
 }
