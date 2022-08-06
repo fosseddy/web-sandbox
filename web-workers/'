@@ -1,0 +1,8 @@
+console.log("hello, from worker.js");
+
+let count = 0;
+
+setInterval(() => {
+  count++;
+  postMessage({ type: "count-change", data: count });
+}, 1000);
