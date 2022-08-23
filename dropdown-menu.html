@@ -52,7 +52,7 @@
       background-color: gray;
     }
 
-    .menu.hover .menu__items {
+    .menu:hover .menu__items {
       visibility: visible;
       transform: rotateX(0deg);
     }
@@ -69,15 +69,5 @@
       <li>Item 4</li>
     </ul>
   </div>
-
-  <script>
-    const menu = document.querySelector(".menu");
-    menu.addEventListener("mouseover", () => {
-          menu.classList.add("hover");
-    });
-    menu.addEventListener("mouseout", () => {
-          menu.classList.remove("hover");
-    });
-  </script>
 </body>
 </html>
