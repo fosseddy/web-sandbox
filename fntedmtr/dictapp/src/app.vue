@@ -1,8 +1,12 @@
 <script>
+import Icon from "@/icons/icon.vue"
+import Header from "@/header/header.vue"
+
 export default {
+    components: { Icon, Header },
+
     data() {
         return {
-            word: "",
             loading: false,
             data: null,
             error: null,
@@ -11,28 +15,29 @@ export default {
     },
 
     methods: {
-        async queryDictionary() {
-            this.word = this.word.trim();
-            if (!this.word.length) return;
+        async queryDictionary(word) {
+            word = word.trim();
+            if (!word.length) return;
 
-            // @Note(art): if audio is present then canplaythough
-            // event listener stops the page loading state
             this.loading = true;
             this.error = null
             this.data = null;
 
             const apiURL = `https://api.dictionaryapi.dev/api/v2/` +
-                           `entries/en/${this.word}`;
+                           `entries/en/${word}`;
             try {
                 const res = await fetch(apiURL);
                 if (!res.ok) {
                     this.error = await res.json();
+                    this.loading = false;
                     return;
                 }
 
                 this.data = await res.json();
                 this.data = this.data[0];
 
+                // @Note(art): if audio is present then canplaythough
+                // event listener stops the page loading state
                 const p = this.data.phonetics.find(it => it.audio?.length > 0);
                 if (p) {
                     this.data.hasAudio = true;
@@ -67,39 +72,43 @@ export default {
 </script>
 
 <template>
-    <div>
-        <header>
-            <div>Logo</div>
+    <Header @query-word="queryDictionary" />
 
-            <select>
-                <option>Serif</option>
-                <option>Mono</option>
-                <option>Sans-Serif</option>
-            </select>
-            <input type="checkbox">
-            <div>light</div>
-
-            <form @submit.prevent="queryDictionary()">
-                <input v-model="word">
-            </form>
-        </header>
-
-        <main>
-            <div v-if="loading">
-                <h1>Loading...</h1>
-            </div>
-            <div v-else-if="error">
-                <h1>{{ error.title }}</h1>
-                <p>{{ error.message }}</p>
-            </div>
-            <header v-else-if="data">
+    <main>
+        <div v-if="loading">
+            <h1>Loading...</h1>
+        </div>
+        <div v-else-if="error">
+            <h1>{{ error.title }}</h1>
+            <p>{{ error.message }}</p>
+        </div>
+        <div v-else-if="data">
+            <header>
                 <h1>{{ data.word }}</h1>
                 <p>{{ data.phonetic }}</p>
-                <button v-if="data.hasAudio" @click="audio.play()" >Play</button>
+                <button v-if="data.hasAudio" @click="audio.play">Play</button>
             </header>
-        </main>
-    </div>
+            <section v-for="m in data.meanings" :key="m.partOfSpeech">
+                <h2>{{ m.partOfSpeech }}</h2>
+                <hr>
+                <p>Meaning</p>
+                <ul>
+                    <li v-for="d in m.definitions" :key="d.definition">{{ d.definition }}</li>
+                </ul>
+                <p v-if="m.synonyms.length">Synonyms {{ m.synonyms.join(", ") }}</p>
+                <p v-if="m.antonyms.length">Antonyms {{ m.antonyms.join(", ") }}</p>
+            </section>
+            <template v-if="data.sourceUrls.length">
+                <hr>
+                <p>Source <a :href="data.sourceUrls[0]">{{ data.sourceUrls[0] }}</a></p>
+            </template>
+        </div>
+    </main>
 </template>
 
 <style scoped>
+main {
+    color: var(--color-fg);
+    background-color: var(--color-bg);
+}
 </style>
