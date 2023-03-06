@@ -18,12 +18,12 @@ export default {
 
     watch: {
         theme(cur, old) {
-            document.body.classList.replace(`theme--${old}`, `theme--${cur}`);
+            document.body.classList.replace(`theme-${old}`, `theme-${cur}`);
         }
     },
 
     created() {
-        document.body.classList.add(`theme--${this.theme}`);
+        document.body.classList.add(`theme-${this.theme}`);
     }
 };
 </script>
@@ -47,13 +47,27 @@ export default {
 </style>
 
 <style>
-.theme--light {
-    --color-bg: white;
-    --color-fg: black;
+body, main, input, select {
+    transition: background-color 200ms linear;
 }
 
-.theme--dark {
+hr {
+    transition: border-color 200ms linear;
+}
+
+.theme-light {
+    --color-bg: white;
+    --color-fg: black;
+    --color-primary: purple;
+    --color-secondary: gray;
+    --color-accent: #eee;
+}
+
+.theme-dark {
     --color-bg: black;
     --color-fg: white;
+    --color-primary: purple;
+    --color-secondary: gray;
+    --color-accent: #2b2929;
 }
 </style>

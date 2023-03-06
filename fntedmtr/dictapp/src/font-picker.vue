@@ -1,5 +1,9 @@
 <script>
+import Icon from "@/icons/icon.vue";
+
 export default {
+    components: { Icon },
+
     data() {
         return {
             font: "Serif"
@@ -8,40 +12,60 @@ export default {
 
     watch: {
         font(cur, old) {
-            document.body.classList.replace(
-                `font-picker--${old}`,
-                `font-picker--${cur}`
-            );
+            document.body.classList.replace(`font-${old}`, `font-${cur}`);
         }
     },
 
     created() {
-        document.body.classList.add(`font-picker--${this.font}`);
+        document.body.classList.add(`font-${this.font}`);
     }
 };
 </script>
 
 <template>
-    <select v-model="font">
-        <option>Serif</option>
-        <option>Mono</option>
-        <option>Sans-Serif</option>
-    </select>
+    <div class="font-picker">
+        <select v-model="font">
+            <option>Serif</option>
+            <option>Mono</option>
+            <option>Sans</option>
+        </select>
+        <Icon name="chevron-down" size="xsm" />
+    </div>
 </template>
 
 <style scoped>
+.font-picker {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.font-picker select {
+    appearance: none;
+    border: none;
+    background-color: var(--color-bg);
+    padding-right: 1.25rem;
+}
+
+.font-picker .icon {
+    pointer-events: none;
+    stroke: var(--color-primary);
+    position: absolute;
+    right: 0;
+    stroke-width: 2px;
+}
 </style>
 
 <style>
-.font-picker--Serif {
+.font-Serif {
     font-family: serif;
 }
 
-.font-picker--Mono {
+.font-Mono {
     font-family: monospace;
 }
 
-.font-picker--Sans-Serif {
+.font-Sans {
     font-family: sans-serif;
 }
 </style>
