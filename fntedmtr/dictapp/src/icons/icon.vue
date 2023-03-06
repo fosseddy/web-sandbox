@@ -3,48 +3,66 @@ import Search from "./search.vue";
 import Logo from "./logo.vue";
 import Moon from "./moon.vue";
 import Sun from "./sun.vue";
+import PlayCircle from "./play-circle.vue";
+import ChevronDown from "./chevron-down.vue";
 
 export default {
-    components: { Search, Logo, Moon, Sun },
+    components: { Search, Logo, Moon, Sun, PlayCircle, ChevronDown },
 
     props: {
-        name: { type: String, required: true }
+        name: {
+            type: String,
+            required: true,
+            validator(val) {
+                return [
+                    "search",
+                    "logo",
+                    "moon",
+                    "sun",
+                    "play-circle",
+                    "chevron-down"
+                ].includes(val);
+            }
+        },
+        size: {
+            type: String,
+            default: "sm",
+            validator(val) { return ["xsm", "sm", "md", "lg"].includes(val); }
+        }
     }
 };
 </script>
 
 <template>
-    <component :is="name" class="icon"></component>
+    <component :is="name" class="icon" :class="size"></component>
 </template>
 
-<style>
+<style scoped>
 .icon {
-    width: 24px;
-    height: 24px;
     stroke-width: 1px;
-    stroke: black;
+    stroke: var(--color-secondary);
     fill: none;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-.icon--xsm {
-    width: 16px;
-    height: 16px;
+.xsm {
+    width: 1rem;
+    height: 1rem;
 }
 
-.icon--sm {
-    width: 24px;
-    height: 24px;
+.sm {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
-.icon--md {
-    width: 48px;
-    height: 48px;
+.md {
+    width: 3rem;
+    height: 3rem;
 }
 
-.icon--lg {
-    width: 96px;
-    height: 96px;
+.lg {
+    width: 4rem;
+    height: 4rem;
 }
 </style>
