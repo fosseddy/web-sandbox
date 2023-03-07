@@ -44,15 +44,55 @@ export default {
     display: flex;
     align-items: center;
 }
+
+input {
+    --track-width: 2rem;
+    --track-height: 1rem;
+    --track-padding: .1875rem;
+    --thumb-width: .75rem;
+    --thumb-color: white;
+
+    appearance: none;
+    width: var(--track-width);
+    height: var(--track-height);
+    border-radius: calc(var(--track-height) / 2);
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-secondary);
+    transition: background-color 100ms linear;
+}
+
+input::after {
+    content: "";
+    border-radius: 50%;
+    background-color: var(--thumb-color);
+    width: var(--thumb-width);
+    height: var(--thumb-width);
+    position: absolute;
+    left: var(--track-padding);
+    transition: transform 100ms linear;
+}
+
+input:checked {
+    background-color: var(--color-primary);
+}
+
+input:checked::after {
+    transform: translateX(
+        calc(var(--track-width) - var(--track-padding) -
+             var(--thumb-width) - var(--track-padding))
+    );
+}
 </style>
 
 <style>
 body, main, input, select {
-    transition: background-color 200ms linear;
+    transition: background-color 100ms linear;
 }
 
 hr {
-    transition: border-color 200ms linear;
+    transition: border-color 100ms linear;
 }
 
 .theme-light {
