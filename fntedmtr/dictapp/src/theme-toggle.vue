@@ -85,7 +85,10 @@ input:checked::after {
 </style>
 
 <style>
-body, main, input, select {
+body,
+main,
+input,
+select {
     transition: background-color 100ms linear;
 }
 

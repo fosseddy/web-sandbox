@@ -5,9 +5,10 @@ import Moon from "./moon.vue";
 import Sun from "./sun.vue";
 import PlayCircle from "./play-circle.vue";
 import ChevronDown from "./chevron-down.vue";
+import Loader from "./loader.vue";
 
 export default {
-    components: { Search, Logo, Moon, Sun, PlayCircle, ChevronDown },
+    components: { Search, Logo, Moon, Sun, PlayCircle, ChevronDown, Loader },
 
     props: {
         name: {
@@ -20,7 +21,8 @@ export default {
                     "moon",
                     "sun",
                     "play-circle",
-                    "chevron-down"
+                    "chevron-down",
+                    "loader"
                 ].includes(val);
             }
         },

@@ -38,8 +38,8 @@ export default {
                 this.data = await res.json();
                 this.data = this.data[0];
 
-                // @Note(art): if audio is present then canplaythough
-                // event listener stops the page loading state
+                // @Note(art): if audio is present then canplaythough or error
+                // event listeners stop the page loading state
                 const p = this.data.phonetics.find(it => it.audio?.length > 0);
                 if (p) {
                     this.data.hasAudio = true;
@@ -59,16 +59,28 @@ export default {
         },
 
         stopLoading() {
-            this.loading = false;
+            if (this.loading) {
+                this.loading = false;
+            }
+        },
+
+        handleAudioLoadError(e) {
+            console.error(this.audio.error);
+            this.data.hasAudio = false;
+            if (this.loading) {
+                this.loading = false;
+            }
         }
     },
 
     created() {
         this.audio.addEventListener("canplaythrough", this.stopLoading);
+        this.audio.addEventListener("error", this.handleAudioLoadError);
     },
 
     unmounted() {
         this.audio.removeEventListener("canplaythrough", this.stopLoading);
+        this.audio.removeEventListener("error", this.handleAudioLoadError);
     }
 };
 </script>
@@ -91,12 +103,15 @@ export default {
     </header>
 
     <main>
-        <div v-if="loading">
-            <h1>Loading...</h1>
+        <div v-if="loading" class="loader">
+            <Icon name="loader" size="md" />
         </div>
         <div v-else-if="error">
-            <h1>{{ error.title }}</h1>
-            <p>{{ error.message }}</p>
+            <div class="section-header">
+                <h2>{{ error.title }}</h2>
+                <hr>
+            </div>
+            <p class="section-subheader">{{ error.message }}</p>
         </div>
         <div v-else-if="data" class="word-info">
             <header>
@@ -144,13 +159,28 @@ export default {
 </template>
 
 <style scoped>
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 main {
     color: var(--color-fg);
     background-color: var(--color-bg);
 }
 
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader .icon {
+    animation: 3s linear rotate infinite;
+}
+
 .app-header {
-    margin-top: 2rem;
+    margin: 2rem 0;
 }
 
 .app-header .top-line {
@@ -175,7 +205,6 @@ main {
     align-items: center;
     position: relative;
     width: 100%;
-    margin-bottom: 2rem;
 }
 
 .app-header form input {
@@ -233,21 +262,22 @@ main {
     stroke: var(--color-primary);
 }
 
-.word-info .section-header {
+.section-header {
     display: flex;
     align-items: center;
 }
 
-.word-info .section-header h2 {
+.section-header h2 {
     font-size: 1.125rem;
     margin-right: 1.25rem;
 }
 
-.word-info .section-header hr {
+.section-header hr {
     width: 100%;
+    flex: 1;
 }
 
-.word-info .section-subheader {
+.section-subheader {
     color: var(--color-secondary);
     font-size: 1.125rem;
 }
