@@ -79,6 +79,7 @@ export default {
             <Icon name="logo" size="md" />
             <div class="settings">
                 <FontPicker />
+                <hr>
                 <ThemeToggle />
             </div>
         </div>
@@ -162,6 +163,11 @@ main {
 .app-header .settings {
     display: flex;
     align-items: center;
+}
+
+.app-header .settings hr {
+    margin: 0 1rem;
+    align-self: stretch;
 }
 
 .app-header form {

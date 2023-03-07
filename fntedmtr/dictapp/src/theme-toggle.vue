@@ -29,18 +29,14 @@ export default {
 </script>
 
 <template>
-    <div class="theme-picker">
-        <input type="checkbox"
-               v-model="theme"
-               true-value="dark"
-               false-value="light"
-        >
+    <div class="theme-toggle">
+        <input type="checkbox" v-model="theme" true-value="dark" false-value="light">
         <Icon :name="themeIcon" />
     </div>
 </template>
 
 <style scoped>
-.theme-picker {
+.theme-toggle {
     display: flex;
     align-items: center;
 }
@@ -60,6 +56,8 @@ input {
     display: flex;
     align-items: center;
     background-color: var(--color-secondary);
+    margin: 0;
+    margin-right: .5rem;
     transition: background-color 100ms linear;
 }
 
