@@ -2,7 +2,6 @@
 export default {
     data() {
         return {
-            transition: "slide-right",
             tabamout: 4,
             tab: 1,
             aside: ["YOUR INFO", "SELECT PLAN", "ADD-ONS", "SUMMARY"]
@@ -18,8 +17,6 @@ export default {
             }
 
             if (index == this.tab) return;
-
-            this.transition = index < this.tab ? "slide-left" : "slide-right";
             this.tab = index;
         },
 
@@ -39,20 +36,20 @@ export default {
 </script>
 
 <template>
-    <div class="container" :style="{border:'1px solid black'}">
-        <div class="nav" :style="{border:'1px solid red'}">
+    <div class="container">
+        <div class="nav">
             <ul>
-                <li v-for="(it, it_index) in aside" :key="it_index" class="box">
-                    <div :class="{'active': it_index + 1 == tab}">{{it_index + 1}}</div>
+                <li v-for="(it, index) in aside" :key="index" class="box">
+                    <div :class="{'active': index + 1 == tab}">{{index + 1}}</div>
                     <div>
-                        <p>STEP {{it_index + 1}}</p>
+                        <p>STEP {{index + 1}}</p>
                         <p>{{it}}</p>
                     </div>
                 </li>
             </ul>
         </div>
 
-        <div :style="{border:'1px solid green'}">
+        <div class="tab">
             <section v-if="tab == 1">
                 <h2>Personal info</h2>
                 <p>Please provide your name, email, address, and phone number.</p>
@@ -74,7 +71,7 @@ export default {
             </section>
         </div>
 
-        <div class="footer" :style="{border:'1px solid blue'}">
+        <div class="footer">
             <div>
                 <button v-if="tab > 1" class="btn-goback" @click="prev">Go Back</button>
             </div>
@@ -104,6 +101,10 @@ export default {
     border-radius: 5px;
 }
 
+.nav ul li:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
 .box {
     display: flex;
     align-items: center;
@@ -114,7 +115,6 @@ export default {
     border: 1px solid white;
     border-radius: 50%;
     padding: .3rem .6rem;
-    transition: all 300ms ease;
 }
 
 .box > :first-child.active {
@@ -131,10 +131,6 @@ export default {
     color: lightgray;
     font-weight: normal;
     font-size: .9rem;
-}
-
-.nav ul li:not(:last-child) {
-    margin-bottom: 1rem;
 }
 
 button {
@@ -178,24 +174,48 @@ section p {
     color: gray;
 }
 
-/*
-.slide-right-enter-active,
-.slide-right-leave-active,
-.slide-left-enter-active,
-.slide-left-leave-active {
-    transition: transform 300ms ease;
-}
+@media (max-width: 44rem) {
+    .container {
+        background: lightgray;
+        height: 100%;
+        padding: 0;
 
-.slide-right-enter-from,
-.slide-left-leave-to {
-    position: absolute;
-    transform: translateX(calc(100% + 5rem));
-}
+        grid-template-columns: 1fr;
+        grid-template-rows: 10rem minmax(25rem, auto) 4rem;
+    }
 
-.slide-right-leave-to,
-.slide-left-enter-from {
-    transform: translateX(calc(-100% - 5rem));
-}*/
+    .nav {
+        border-radius: 0;
+        grid-row: 1;
+    }
+
+    .nav ul {
+        display: flex;
+        justify-content: center;
+    }
+
+    .nav ul li:not(:last-child) {
+        margin-bottom: 0;
+    }
+
+    .box > :nth-child(2) p {
+        display: none;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .box > :not(:last-child) {
+        margin-right: 1rem;
+    }
+
+    .tab {
+        background: white;
+        border-radius: 5px;
+        margin: 0 1rem;
+        position: relative;
+        top: -4rem;
+    }
+}
 </style>
 
 <!-- Global Styles -->
@@ -221,5 +241,12 @@ body {
     display: grid;
     place-content: center;
     background: lightgray;
+}
+
+@media (max-width: 44rem) {
+    body {
+        display: block;
+        margin: 0;
+    }
 }
 </style>
