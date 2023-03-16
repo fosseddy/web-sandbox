@@ -1,35 +1,33 @@
 <script>
 export default {
-    components: {},
-
     data() {
         return {
             transition: "slide-right",
-            tabnum: 4,
+            tabamout: 4,
             tab: 1
         };
     },
 
-    computed: {
-    },
-
-    watch: {
-    },
-
     methods: {
-        nextTab() {
-            if (this.tab < this.tabnum) {
-                this.tab += 1;
-                this.transition = "slide-right";
-
+        goto(index) {
+            if (index > this.tabamout) {
+                index = this.tabamout;
+            } else if (index < 1) {
+                index = 1;
             }
+
+            if (index == this.tab) return;
+
+            this.transition = index < this.tab ? "slide-left" : "slide-right";
+            this.tab = index;
         },
 
-        prevTab() {
-            if (this.tab > 1) {
-                this.tab -= 1;
-                this.transition = "slide-left";
-            }
+        next() {
+            this.goto(this.tab + 1);
+        },
+
+        prev() {
+            this.goto(this.tab - 1);
         },
 
         submit() {
@@ -51,93 +49,110 @@ export default {
             <section v-if="tab == 1">
                 <h2>Personal info</h2>
                 <p>Please provide your name, email, address, and phone number.</p>
-                <form>
-                    <div>
-                        <label for="name">Name</label>
-                        <input id="name">
-                    </div>
-                    <div>
-                        <label for="email">Email Address</label>
-                        <input id="email">
-                    </div>
-                    <div>
-                        <label for="phone">Phone Number</label>
-                        <input id="phone">
-                    </div>
-                </form>
             </section>
 
             <section v-else-if="tab == 2">
                 <h2>Select your plan</h2>
                 <p>You have the option of monthly or yearly billing.</p>
-                <form>
-                    <div>
-                        <input id="arcade" type="checkbox">
-                        <label for="arcade">Arcade</label>
-                        <p>$9/mo</p>
-                    </div>
-                    <div>
-                        <input id="advanced" type="checkbox">
-                        <label for="advanced">Advanced</label>
-                        <p>$12/mo</p>
-                    </div>
-                    <div>
-                        <input id="pro" type="checkbox">
-                        <label for="pro">Pro</label>
-                        <p>$15/mo</p>
-                    </div>
-                </form>
             </section>
 
             <section v-else-if="tab == 3">
-                <h2>Tab 3</h2>
-                <p>This is Tab 3.</p>
+                <h2>Pick add-ons</h2>
+                <p>Add-ons help enhance your gaming experience.</p>
             </section>
 
             <section v-else>
-                <h2>Tab 4</h2>
-                <p>This is Tab 4.</p>
+                <h2>Finishing up</h2>
+                <p>Double-check everything looks OK before confirming.</p>
             </section>
         </Transition>
     </main>
 
     <footer>
         <div>
-            <button v-if="tab > 1" @click="prevTab">Go Back</button>
+            <button v-if="tab > 1" class="btn-goback" @click="prev">Go Back</button>
         </div>
-        <button v-if="tab < tabnum" @click="nextTab">Next Step</button>
-        <button v-else @click="submit">Confirm</button>
+        <button v-if="tab < tabamout" @click="next">Next Step</button>
+        <button v-else class="btn-action" @click="submit">Confirm</button>
     </footer>
 </template>
 
 <style scoped>
 main {
-    background: gray;
+    background: lightgray;
+    position: relative;
 }
 
 header {
-    background: red;
+    background: cornflowerblue;
+    color: white;
     padding: 1rem;
 }
 
+header ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    justify-content: center;
+}
+
+header ul li {
+    border: 1px solid white;
+    border-radius: 50%;
+    padding: .3rem .6rem;
+    transition: all 300ms ease;
+}
+
+header ul li:not(:last-child) {
+    margin-right: 1rem;
+}
+
 section {
+    border-radius: 5px;
     background: white;
     padding: 1rem;
-    position: relative;
+    position: absolute;
     top: -3rem;
     left: 1rem;
     right: 1rem;
 }
 
+section p {
+    color: gray;
+}
+
 footer {
+    padding: 0 1rem;
     background: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
+button {
+    padding: 0.5rem 1rem;
+    margin: 0;
+    border: none;
+    background: navy;
+    color: white;
+    border-radius: 5px
+}
+
+.btn-goback {
+    color: gray;
+    background: transparent;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.btn-action {
+    background: cornflowerblue;
+}
+
 .active {
-    background: yellow;
+    background: white;
+    border-color: white;
+    color: black;
 }
 
 .slide-right-enter-active,
@@ -149,6 +164,7 @@ footer {
 
 .slide-right-enter-from,
 .slide-left-leave-to {
+    position: absolute;
     transform: translateX(calc(100% + 5rem));
 }
 
@@ -182,7 +198,7 @@ body,
 
 #app {
     display: grid;
-    grid-template-rows: 10rem 1fr 4rem;
+    grid-template-rows: 10rem minmax(25rem, auto) 4rem;
     overflow-x: hidden;
 }
 </style>
