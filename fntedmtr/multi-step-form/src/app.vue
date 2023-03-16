@@ -4,7 +4,8 @@ export default {
         return {
             transition: "slide-right",
             tabamout: 4,
-            tab: 1
+            tab: 1,
+            aside: ["YOUR INFO", "SELECT PLAN", "ADD-ONS", "SUMMARY"]
         };
     },
 
@@ -38,14 +39,20 @@ export default {
 </script>
 
 <template>
-    <header>
-        <ul>
-            <li v-for="n in 4" :key="n" :class="{active: n == tab}">{{n}}</li>
-        </ul>
-    </header>
+    <div class="container" :style="{border:'1px solid black'}">
+        <div class="nav" :style="{border:'1px solid red'}">
+            <ul>
+                <li v-for="(it, it_index) in aside" :key="it_index" class="box">
+                    <div :class="{'active': it_index + 1 == tab}">{{it_index + 1}}</div>
+                    <div>
+                        <p>STEP {{it_index + 1}}</p>
+                        <p>{{it}}</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
 
-    <main>
-        <Transition :name="transition">
+        <div :style="{border:'1px solid green'}">
             <section v-if="tab == 1">
                 <h2>Personal info</h2>
                 <p>Please provide your name, email, address, and phone number.</p>
@@ -65,77 +72,83 @@ export default {
                 <h2>Finishing up</h2>
                 <p>Double-check everything looks OK before confirming.</p>
             </section>
-        </Transition>
-    </main>
-
-    <footer>
-        <div>
-            <button v-if="tab > 1" class="btn-goback" @click="prev">Go Back</button>
         </div>
-        <button v-if="tab < tabamout" @click="next">Next Step</button>
-        <button v-else class="btn-action" @click="submit">Confirm</button>
-    </footer>
+
+        <div class="footer" :style="{border:'1px solid blue'}">
+            <div>
+                <button v-if="tab > 1" class="btn-goback" @click="prev">Go Back</button>
+            </div>
+            <button v-if="tab < tabamout" @click="next">Next Step</button>
+            <button v-else class="btn-action" @click="submit">Confirm</button>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-main {
-    background: lightgray;
-    position: relative;
+.container {
+    display: grid;
+    grid-template-columns: minmax(15rem, 1fr) minmax(20rem, 2fr);
+    grid-template-rows: 1fr 4rem;
+    background: white;
+    border-radius: 5px;
+    padding: 1rem;
+    column-gap: 2rem;
+    min-height: 30rem;
 }
 
-header {
+.nav {
+    grid-row: 1/3;
+    padding: .5rem 1.5rem;
     background: cornflowerblue;
     color: white;
-    padding: 1rem;
+    border-radius: 5px;
 }
 
-header ul {
-    list-style: none;
+.box {
     display: flex;
-    padding: 0;
-    justify-content: center;
+    align-items: center;
 }
 
-header ul li {
+.box > :first-child {
+    margin-right: 1rem;
     border: 1px solid white;
     border-radius: 50%;
     padding: .3rem .6rem;
     transition: all 300ms ease;
 }
 
-header ul li:not(:last-child) {
-    margin-right: 1rem;
-}
-
-section {
-    border-radius: 5px;
+.box > :first-child.active {
     background: white;
-    padding: 1rem;
-    position: absolute;
-    top: -3rem;
-    left: 1rem;
-    right: 1rem;
+    color: black;
 }
 
-section p {
-    color: gray;
+.box > :nth-child(2) p {
+    margin: 0;
+    font-weight: bold;
 }
 
-footer {
-    padding: 0 1rem;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.box > :nth-child(2) p:first-child {
+    color: lightgray;
+    font-weight: normal;
+    font-size: .9rem;
+}
+
+.nav ul li:not(:last-child) {
+    margin-bottom: 1rem;
 }
 
 button {
+    cursor: pointer;
     padding: 0.5rem 1rem;
     margin: 0;
     border: none;
     background: navy;
     color: white;
     border-radius: 5px
+}
+
+button:hover {
+    opacity: .8;
 }
 
 .btn-goback {
@@ -149,12 +162,23 @@ button {
     background: cornflowerblue;
 }
 
-.active {
+.footer {
+    padding: 0 1rem;
     background: white;
-    border-color: white;
-    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
+section {
+    padding: 1rem;
+}
+
+section p {
+    color: gray;
+}
+
+/*
 .slide-right-enter-active,
 .slide-right-leave-active,
 .slide-left-enter-active,
@@ -171,7 +195,7 @@ button {
 .slide-right-leave-to,
 .slide-left-enter-from {
     transform: translateX(calc(-100% - 5rem));
-}
+}*/
 </style>
 
 <!-- Global Styles -->
@@ -182,12 +206,9 @@ button {
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-}
-
-label {
-    display: block;
+ul {
+    list-style: none;
+    padding: 0;
 }
 
 html,
@@ -196,9 +217,9 @@ body,
     height: 100%;
 }
 
-#app {
+body {
     display: grid;
-    grid-template-rows: 10rem minmax(25rem, auto) 4rem;
-    overflow-x: hidden;
+    place-content: center;
+    background: lightgray;
 }
 </style>
