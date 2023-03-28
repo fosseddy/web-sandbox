@@ -9,12 +9,6 @@ use PDO;
 
 const COOKIE_NAME = "session";
 
-class Model
-{
-    public $id;
-    public $user_id;
-}
-
 function create($user_id)
 {
     $hash = hash_hmac("sha256", "$user_id", "secret_string");
