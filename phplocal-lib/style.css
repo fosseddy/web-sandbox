@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    gap: 3rem;
+    max-width: 64rem;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li:nth-child(6) {
+    padding: 1rem 0;
+}
+
+a {
+    text-decoration: none;
+    color: steelblue;
+}
+
+main {
+    width: 100%;
+}
