@@ -1,6 +1,5 @@
 <?php
 require_once "./database.php";
-require_once "./debug.php";
 
 $db = Database\connect();
 
@@ -20,6 +19,7 @@ try
 }
 catch (Exception $e)
 {
+    error_log($e->getMessage());
     header("Location: /error.php");
     exit;
 }
@@ -27,9 +27,9 @@ catch (Exception $e)
 $title = "Local Library Home";
 ?>
 
-<?php require_once "./partials/head.php"; ?>
+<?php require_once "./partials/head.php" ?>
 
-<h1><?= $title; ?></h1>
+<h1><?= $title ?></h1>
 
 <p>Welcome to <em>LocalLibrary</em>, a very basic website developed to practice PHP.</p>
 
@@ -38,11 +38,11 @@ $title = "Local Library Home";
 <p>The library has the following record counts:</p>
 
 <ul>
-    <li><strong>Books:</strong> <?= $book["count"]; ?></li>
-    <li><strong>Copies:</strong> <?= $book_instance["count"]; ?></li>
-    <li><strong>Copies available:</strong> <?= $book_instance_available["count"]; ?></li>
-    <li><strong>Authors:</strong> <?= $author["count"]; ?></li>
-    <li><strong>Genres:</strong> <?= $genre["count"]; ?></li>
+    <li><strong>Books:</strong> <?= $book["count"] ?></li>
+    <li><strong>Copies:</strong> <?= $book_instance["count"] ?></li>
+    <li><strong>Copies available:</strong> <?= $book_instance_available["count"] ?></li>
+    <li><strong>Authors:</strong> <?= $author["count"] ?></li>
+    <li><strong>Genres:</strong> <?= $genre["count"] ?></li>
 </ul>
 
-<?php require_once "./partials/footer.php"; ?>
+<?php require_once "./partials/footer.php" ?>

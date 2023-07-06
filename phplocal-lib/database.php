@@ -16,6 +16,7 @@ function connect()
     }
     catch (Exception $e)
     {
+        error_log($e->getMessage());
         header("Location: /error.php");
         exit;
     }

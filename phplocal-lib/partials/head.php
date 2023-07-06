@@ -10,7 +10,7 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/">All books</a></li>
+            <li><a href="/books">All books</a></li>
             <li><a href="/">All authors</a></li>
             <li><a href="/">All genres</a></li>
             <li><a href="/">All book instances</a></li>

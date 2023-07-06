@@ -24,6 +24,10 @@ a {
     color: steelblue;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
 main {
     width: 100%;
 }
