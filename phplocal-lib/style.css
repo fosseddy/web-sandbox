@@ -31,3 +31,7 @@ a:hover {
 main {
     width: 100%;
 }
+
+.text-success { color: green; }
+.text-danger { color: red; }
+.text-warning { color: orange; }

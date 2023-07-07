@@ -1,12 +1,15 @@
 <?php
+
 require_once "../database.php";
 require_once "../models.php";
 
 $db = Database\connect();
 
+$title = "Book List";
+
 try
 {
-    $books = $db->query("select id, title, author_id from book",
+    $books = $db->query("select id, title, author_id from book order by title",
                         PDO::FETCH_CLASS, "Models\Book")
                 ->fetchAll();
 
@@ -27,7 +30,6 @@ catch (Exception $e)
     exit;
 }
 
-$title = "Book List";
 ?>
 
 <?php require_once "../partials/head.php" ?>
@@ -35,7 +37,7 @@ $title = "Book List";
 <h1><?= $title ?></h1>
 
 <ul>
-    <?php if (empty($books)): ?>
+    <?php if (!$books): ?>
         <li>There are no books</li>
     <?php else: ?>
         <?php foreach ($books as $b): ?>

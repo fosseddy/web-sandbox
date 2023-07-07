@@ -11,9 +11,9 @@
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/books">All books</a></li>
-            <li><a href="/">All authors</a></li>
-            <li><a href="/">All genres</a></li>
-            <li><a href="/">All book instances</a></li>
+            <li><a href="/authors">All authors</a></li>
+            <li><a href="/genres">All genres</a></li>
+            <li><a href="/book_instances">All book instances</a></li>
             <li><hr></li>
             <li><a href="/">Create new author</a></li>
             <li><a href="/">Create new genre</a></li>
