@@ -6,20 +6,30 @@ require_once "../models.php";
 $db = Database\connect();
 
 $title = "Book Instances List";
+$book_instances = [];
 
 try
 {
-    $book_instances = $db->query("select * from book_instance",
-                                 PDO::FETCH_CLASS, "Models\Book_Instance")
-                         ->fetchAll();
+    $data = $db->query("select BI.id, BI.imprint, BI.status, BI.due_back, " .
+                       "B.title from book_instance as BI " .
+                       "left join book as B on BI.book_id = B.id",
+                       PDO::FETCH_OBJ)
+               ->fetchAll();
 
-    foreach($book_instances as $i => $b)
+    foreach($data as $d)
     {
-        $s = $db->prepare("select * from book where id = ?");
-        $s->setFetchMode(PDO::FETCH_CLASS, "Models\Book");
-        $s->execute([$b->book_id]);
-        $b->book = $s->fetch();
-        $book_instances[$i] = $b;
+        $bi = new Models\Book_Instance();
+        $b = new Models\Book();
+
+        $bi->id = $d->id;
+        $bi->imprint = $d->imprint;
+        $bi->status = $d->status;
+        $bi->due_back = $d->due_back;
+
+        $b->title = $d->title;
+
+        $bi->book = $b;
+        $book_instances[] = $bi;
     }
 }
 catch (Exception $e)

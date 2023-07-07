@@ -6,21 +6,29 @@ require_once "../models.php";
 $db = Database\connect();
 
 $title = "Book List";
+$books = [];
 
 try
 {
-    $books = $db->query("select id, title, author_id from book order by title",
-                        PDO::FETCH_CLASS, "Models\Book")
-                ->fetchAll();
+    $data = $db->query("select B.id, B.title, A.first_name, A.family_name " .
+                       "from book as B " .
+                       "left join author as A on B.author_id = A.id " .
+                       "order by B.title", PDO::FETCH_OBJ)
+               ->fetchAll();
 
-    foreach($books as $i => $b)
+    foreach ($data as $d)
     {
-        $s = $db->prepare("select first_name, family_name " .
-                          "from author where id = ?");
-        $s->setFetchMode(PDO::FETCH_CLASS, "Models\Author");
-        $s->execute([$b->author_id]);
-        $b->author = $s->fetch();
-        $books[$i] = $b;
+        $b = new Models\Book();
+        $a = new Models\Author();
+
+        $b->id = $d->id;
+        $b->title = $d->title;
+
+        $a->first_name = $d->first_name;
+        $a->family_name = $d->family_name;
+
+        $b->author = $a;
+        $books[] = $b;
     }
 }
 catch (Exception $e)

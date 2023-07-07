@@ -11,7 +11,7 @@ try
 {
     $genres = $db->query("select * from genre order by name", PDO::FETCH_CLASS,
                          "Models\Genre")
-                  ->fetchAll();
+                 ->fetchAll();
 }
 catch (Exception $e)
 {
@@ -31,7 +31,7 @@ catch (Exception $e)
         <li>There are no genres</li>
     <?php else: ?>
         <?php foreach ($genres as $g): ?>
-            <li><a href=<?= $g->url() ?>><?= $g->name ?></li>
+            <li><a href=<?= $g->url() ?>><?= $g->name ?></a></li>
         <?php endforeach ?>
     <?php endif ?>
 </ul>
