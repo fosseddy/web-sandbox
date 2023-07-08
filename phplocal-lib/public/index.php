@@ -15,6 +15,7 @@ function debug($val)
 require_once from_base("core/net.php");
 require_once from_base("core/database.php");
 
+require_once from_base("home.php");
 require_once from_base("books.php");
 require_once from_base("authors.php");
 require_once from_base("genres.php");
@@ -25,29 +26,7 @@ $router->ctx = [
     "pdo" => Database\connect("localhost", "local_lib", "art", "qweqwe123")
 ];
 
-$router->get("/", function($ctx) {
-    $pdo = $ctx["pdo"];
-
-    $author = $pdo->query("select count(*) as count from author")->fetch();
-    $book = $pdo->query("select count(*) as count from book")->fetch();
-    $genre = $pdo->query("select count(*) as count from genre")->fetch();
-
-    $s = $pdo->query("select count(*) as count from book_instance");
-    $book_instance = $s->fetch();
-
-    $s = $pdo->query("select count(*) as count from book_instance " .
-                     "where status = 0");
-    $book_instance_available = $s->fetch();
-
-    Net\render_view("index.php", [
-        "title" => "Local Library Home",
-        "book" => $book,
-        "book_instance" => $book_instance,
-        "book_instance_available" => $book_instance_available,
-        "author" => $author,
-        "genre" => $genre,
-    ]);
-});
+$router->get("/", "Home\handle_index");
 
 $router->get("/books", "Books\handle_index");
 $router->get("/books/detail", "Books\handle_detail");
