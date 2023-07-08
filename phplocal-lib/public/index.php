@@ -12,8 +12,11 @@ function debug($val)
     echo "</pre>";
 }
 
-require_once from_base("/net.php");
-require_once from_base("/database.php");
+require_once from_base("net.php");
+require_once from_base("database.php");
+
+require_once from_base("models.php");
+require_once from_base("books.php");
 
 $router = new Net\Router();
 $router->ctx = [
@@ -34,7 +37,7 @@ $router->get("/", function($ctx) {
                      "where status = 0");
     $book_instance_available = $s->fetch();
 
-    Net\render_view("/index.php", [
+    Net\render_view("index.php", [
         "title" => "Local Library Home",
         "book" => $book,
         "book_instance" => $book_instance,
@@ -44,13 +47,7 @@ $router->get("/", function($ctx) {
     ]);
 });
 
-$router->get("/error", function() {
-    echo "<h1>Something went wrong, sorry</h1>";
-});
-
-$router->get("/not-found", function() {
-    echo "<h1>Resource not found</h1>";
-    echo '<p><a href="/">Back to Home</a></p>';
-});
+$router->get("/books", "Books\handle_index");
+$router->get("/books/detail", "Books\handle_detail");
 
 $router->resolve();

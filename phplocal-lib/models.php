@@ -2,22 +2,6 @@
 
 namespace Models;
 
-class Book
-{
-    public $id;
-    public $title;
-    public $author_id;
-    public $summary;
-    public $ISBN;
-
-    public $author;
-
-    function url()
-    {
-        return "/books/detail.php?id=$this->id";
-    }
-}
-
 class Author
 {
     public $id;
@@ -33,7 +17,7 @@ class Author
 
     function url()
     {
-        return "/authors/detail.php?id=$this->id";
+        return "/authors/detail?id=$this->id";
     }
 
     function lifespan()
@@ -53,6 +37,13 @@ class Author
 
 class Book_Instance
 {
+    const STATUS_TEXT = [
+        "Available",
+        "Maintenance",
+        "Loaned",
+        "Reserved"
+    ];
+
     public $id;
     public $book_id;
     public $imprint;
@@ -63,12 +54,17 @@ class Book_Instance
 
     function url()
     {
-        return "/book_instances/detail.php?id=$this->id";
+        return "/book_instances/detail?id=$this->id";
     }
 
     function due_back_formatted()
     {
         return date_create($this->due_back)->format("D, d M Y");
+    }
+
+    function status_string()
+    {
+        return static::STATUS_TEXT[$this->status];
     }
 }
 
@@ -79,6 +75,6 @@ class Genre
 
     function url()
     {
-        return "/genres/detail.php?id=$this->id";
+        return "/genres/detail?id=$this->id";
     }
 }
