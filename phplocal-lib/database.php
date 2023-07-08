@@ -4,20 +4,11 @@ namespace Database;
 
 use PDO;
 
-function connect()
+function connect($host, $dbname, $user, $pass)
 {
-    try
-    {
-        $db = new PDO("mysql:host=localhost;dbname=local_lib", "art", "qweqwe123");
-        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        return $db;
-    }
-    catch (Exception $e)
-    {
-        error_log($e->getMessage());
-        header("Location: /error.php");
-        exit;
-    }
+    return $db;
 }
