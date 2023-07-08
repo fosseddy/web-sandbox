@@ -12,8 +12,8 @@ function debug($val)
     echo "</pre>";
 }
 
-require_once from_base("net.php");
-require_once from_base("database.php");
+require_once from_base("core/net.php");
+require_once from_base("core/database.php");
 
 require_once from_base("books.php");
 require_once from_base("authors.php");

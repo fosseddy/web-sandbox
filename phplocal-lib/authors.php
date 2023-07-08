@@ -2,7 +2,7 @@
 
 namespace Authors;
 
-use PDO;
+use PDO, Exception;
 use Net;
 
 class Model
@@ -14,15 +14,6 @@ class Model
     public $date_of_death;
 
     public $books;
-
-    function populate($data)
-    {
-        $this->id = $data["author_id"];
-        $this->first_name = $data["first_name"];
-        $this->family_name = $data["family_name"];
-        $this->date_of_birth = $data["date_of_birth"];
-        $this->date_of_death = $data["date_of_death"];
-    }
 
     function name()
     {

@@ -3,7 +3,7 @@
 namespace Books;
 
 use PDO, Exception;
-use Net, Authors, Models;
+use Net, Authors;
 
 class Model
 {
@@ -79,7 +79,7 @@ function handle_detail($ctx)
     $s = $pdo->prepare("select id, status, imprint, due_back " .
                        "from book_instance where book_id = ?");
     $s->execute([$book_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Models\Book_Instance");
+    $s->setFetchMode(PDO::FETCH_CLASS, "Book_Instances\Model");
     $book_instances = $s->fetchAll();
 
     $s = $pdo->prepare("select G.id, G.name from genre as G " .

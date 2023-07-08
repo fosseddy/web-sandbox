@@ -3,7 +3,7 @@
 namespace Genres;
 
 use PDO, Exception;
-use Net, Books;
+use Net;
 
 class Model
 {
