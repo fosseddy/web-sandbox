@@ -86,7 +86,7 @@ function handle_detail($ctx)
                        "left join book_genres as BG on G.id = BG.genre_id " .
                        "where BG.book_id = ?");
     $s->execute([$book_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Models\Genre");
+    $s->setFetchMode(PDO::FETCH_CLASS, "Genres\Model");
     $genres = $s->fetchAll();
 
     Net\render_view("books/detail.php", [

@@ -15,10 +15,10 @@ function debug($val)
 require_once from_base("net.php");
 require_once from_base("database.php");
 
-require_once from_base("models.php");
-
 require_once from_base("books.php");
 require_once from_base("authors.php");
+require_once from_base("genres.php");
+require_once from_base("book-instances.php");
 
 $router = new Net\Router();
 $router->ctx = [
@@ -54,5 +54,11 @@ $router->get("/books/detail", "Books\handle_detail");
 
 $router->get("/authors", "Authors\handle_index");
 $router->get("/authors/detail", "Authors\handle_detail");
+
+$router->get("/genres", "Genres\handle_index");
+$router->get("/genres/detail", "Genres\handle_detail");
+
+$router->get("/book-instances", "Book_Instances\handle_index");
+$router->get("/book-instances/detail", "Book_Instances\handle_detail");
 
 $router->resolve();

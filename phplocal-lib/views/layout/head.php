@@ -13,7 +13,7 @@
             <li><a href="/books">All books</a></li>
             <li><a href="/authors">All authors</a></li>
             <li><a href="/genres">All genres</a></li>
-            <li><a href="/book_instances">All book instances</a></li>
+            <li><a href="/book-instances">All book instances</a></li>
             <li><hr></li>
             <li><a href="/">Create new author</a></li>
             <li><a href="/">Create new genre</a></li>
