@@ -30,6 +30,8 @@ function handle_index($ctx)
                      "left join author as A on B.author_id = A.id " .
                      "order by B.title");
 
+    $books = [];
+
     foreach($s->fetchAll() as $it)
     {
         $b = new Model();

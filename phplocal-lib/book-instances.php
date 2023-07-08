@@ -47,6 +47,8 @@ function handle_index($ctx)
                         "B.title from book_instance as BI " .
                         "left join book as B on BI.book_id = B.id");
 
+    $book_instances = [];
+
     foreach($s->fetchAll() as $it)
     {
         $bi = new Model();
