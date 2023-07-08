@@ -61,3 +61,8 @@ function partial_view($path)
 {
     return from_base("views", $path);
 }
+
+function redirect($url)
+{
+    header("Location: {$url}");
+}

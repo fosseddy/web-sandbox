@@ -35,3 +35,33 @@ main {
 .text-success { color: green; }
 .text-danger { color: red; }
 .text-warning { color: orange; }
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input {
+    display: block;
+    width: 100%;
+    padding: .25rem .5rem;
+    margin-top: .375rem;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+.btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: .5rem .625rem;
+}
+
+.btn-primary {
+    background: steelblue;
+    color: white;
+    font-weight: bold;
+}

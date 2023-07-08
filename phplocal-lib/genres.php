@@ -3,7 +3,7 @@
 namespace Genres;
 
 use PDO, Exception;
-use Net;
+use Net, Genres;
 
 class Model
 {
@@ -55,4 +55,49 @@ function handle_detail($ctx)
         "genre" => $genre,
         "books" => $books,
     ]);
+}
+
+function handle_create($ctx)
+{
+    Net\render_view("genres/create.php", ["title" => "Create Genre"]);
+}
+
+function handle_store($ctx)
+{
+    $pdo = $ctx["pdo"];
+
+    $errors = [];
+    $genre = new Genres\Model();
+
+    $genre->name = htmlspecialchars(trim($_POST["name"]));
+    $namelen = strlen($genre->name);
+
+    if ($namelen < 3 || $namelen > 255) $errors[] = "Genre name must be at least 3 characters long, but less than 255 characters";
+
+    if ($errors)
+    {
+        Net\render_view("genres/create.php", [
+            "title" => "Create Genre",
+            "genre" => $genre,
+            "errors" => $errors
+        ]);
+        return;
+    }
+
+    $s = $pdo->prepare("select id from genre where name = ?");
+    $s->execute([$genre->name]);
+    $s->setFetchMode(PDO::FETCH_INTO, $genre);
+    $s->fetch();
+
+    if ($genre->id)
+    {
+        Net\redirect($genre->url());
+        return;
+    }
+
+    $s = $pdo->prepare("insert into genre (name) values (?)");
+    $s->execute([$genre->name]);
+
+    $genre->id = $pdo->lastInsertId();
+    Net\redirect($genre->url());
 }

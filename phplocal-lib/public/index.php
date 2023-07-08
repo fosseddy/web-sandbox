@@ -36,6 +36,8 @@ $router->get("/authors/detail", "Authors\handle_detail");
 
 $router->get("/genres", "Genres\handle_index");
 $router->get("/genres/detail", "Genres\handle_detail");
+$router->get("/genres/create", "Genres\handle_create");
+$router->post("/genres/create", "Genres\handle_store");
 
 $router->get("/book-instances", "Book_Instances\handle_index");
 $router->get("/book-instances/detail", "Book_Instances\handle_detail");
