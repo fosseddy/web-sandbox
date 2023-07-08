@@ -3,7 +3,7 @@
 namespace Books;
 
 use PDO, Exception;
-use Net, Models;
+use Net, Authors, Models;
 
 class Model
 {
@@ -15,91 +15,37 @@ class Model
 
     public $author;
 
-    function __construct($data)
-    {
-        $this->id = $data["id"];
-        $this->title = $data["title"];
-        $this->author_id = $data["author_id"];
-        $this->summary = $data["summary"];
-        $this->ISBN = $data["ISBN"];
-    }
-
     function url()
     {
         return "/books/detail?id=$this->id";
     }
 }
 
-function query_many($pdo, $with_author = false)
+function handle_index($ctx)
 {
-    if (!$with_author)
-    {
-        $s = $pdo->query("select * from book order by title",
-                         PDO::FETCH_CLASS, "Books\Model");
-        return $s->fetchAll();
-    }
+    $pdo = $ctx["pdo"];
 
-    $s = $pdo->query("select B.*, A.* from book as B " .
+    $s = $pdo->query("select B.id, B.title, A.first_name, A.family_name " .
+                     "from book as B " .
                      "left join author as A on B.author_id = A.id " .
                      "order by B.title");
 
-    foreach ($s->fetchAll() as $it)
+    foreach($s->fetchAll() as $it)
     {
-        $b = new Model($it);
-        $a = new Models\Author();
+        $b = new Model();
+        $b->author = new Authors\Model();
 
-        $a->id = $it["author_id"];
-        $a->first_name = $it["first_name"];
-        $a->family_name = $it["family_name"];
-        $a->date_of_birth = $it["date_of_birth"];
-        $a->date_of_death = $it["date_of_death"];
-
-        $b->author = $a;
+        $b->id = $it["id"];
+        $b->title = $it["title"];
+        $b->author->first_name = $it["first_name"];
+        $b->author->family_name = $it["family_name"];
 
         $books[] = $b;
     }
 
-    return $books;
-}
-
-function query_one($pdo, $id, $with_author = false)
-{
-    if (!$with_author)
-    {
-        $s = $pdo->prepare("select * from book where id = ?");
-        $s->execute([$id]);
-        $s->setFetchMode(PDO::FETCH_CLASS, "Books\Model");
-
-        return $s->fetch();
-    }
-
-    $s = $pdo->prepare("select B.*, A.* from book as B " .
-                       "left join author as A on B.author_id = A.id " .
-                       "where B.id = ?");
-    $s->execute([$id]);
-    $data = $s->fetch();
-
-    if (!$data) return null;
-
-    $b = new Model($data);
-    $a = new Models\Author();
-
-    $a->id = $data["author_id"];
-    $a->first_name = $data["first_name"];
-    $a->family_name = $data["family_name"];
-    $a->date_of_birth = $data["date_of_birth"];
-    $a->date_of_death = $data["date_of_death"];
-
-    $b->author = $a;
-
-    return $b;
-}
-
-function handle_index($ctx)
-{
     Net\render_view("books/index.php", [
         "title" => "Book List",
-        "books" => query_many($ctx["pdo"], true)
+        "books" => $books
     ]);
 }
 
@@ -110,15 +56,30 @@ function handle_detail($ctx)
 
     if (!$book_id) throw new Exception("404: book not found");
 
-    $book = query_one($pdo, $book_id, true);
+    $s = $pdo->prepare("select B.title, B.summary, B.ISBN, A.id as a_id, " .
+                       "A.first_name, A.family_name " .
+                       "from book as B " .
+                       "left join author as A on B.author_id = A.id " .
+                       "where B.id = ?");
+    $s->execute([$book_id]);
+    $data = $s->fetch();
 
-    if (!$book) throw new Exception("404: book not found");
+    if (!$data) throw new Exception("404: book not found");
+
+    $book = new Model();
+    $book->author = new Authors\Model();
+
+    $book->title = $data["title"];
+    $book->summary = $data["summary"];
+    $book->ISBN = $data["ISBN"];
+    $book->author->id = $data["a_id"];
+    $book->author->first_name = $data["first_name"];
+    $book->author->family_name = $data["family_name"];
 
     $s = $pdo->prepare("select id, status, imprint, due_back " .
                        "from book_instance where book_id = ?");
     $s->execute([$book_id]);
     $s->setFetchMode(PDO::FETCH_CLASS, "Models\Book_Instance");
-
     $book_instances = $s->fetchAll();
 
     $s = $pdo->prepare("select G.id, G.name from genre as G " .
@@ -126,7 +87,6 @@ function handle_detail($ctx)
                        "where BG.book_id = ?");
     $s->execute([$book_id]);
     $s->setFetchMode(PDO::FETCH_CLASS, "Models\Genre");
-
     $genres = $s->fetchAll();
 
     Net\render_view("books/detail.php", [

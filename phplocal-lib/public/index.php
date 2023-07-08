@@ -16,7 +16,9 @@ require_once from_base("net.php");
 require_once from_base("database.php");
 
 require_once from_base("models.php");
+
 require_once from_base("books.php");
+require_once from_base("authors.php");
 
 $router = new Net\Router();
 $router->ctx = [
@@ -49,5 +51,8 @@ $router->get("/", function($ctx) {
 
 $router->get("/books", "Books\handle_index");
 $router->get("/books/detail", "Books\handle_detail");
+
+$router->get("/authors", "Authors\handle_index");
+$router->get("/authors/detail", "Authors\handle_detail");
 
 $router->resolve();
