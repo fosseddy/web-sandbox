@@ -1,4 +1,4 @@
-<?php require_once Net\partial_view("layout/head.php") ?>
+<?php require_once Net\partial_view("layout/head") ?>
 
 <h1>Author: <?= $author->name() ?></h1>
 <p><?= $author->lifespan() ?></p>
@@ -18,4 +18,4 @@
     </dl>
 </div>
 
-<?php require_once Net\partial_view("layout/footer.php") ?>
+<?php require_once Net\partial_view("layout/footer") ?>

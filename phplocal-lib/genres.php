@@ -23,7 +23,7 @@ function handle_index($ctx)
     $s = $pdo->query("select id, name from genre order by name",
                     PDO::FETCH_CLASS, "Genres\Model");
 
-    Net\render_view("genres/index.php", [
+    Net\render_view("genres/index", [
         "title" => "Genre List",
         "genres" => $s->fetchAll()
     ]);
@@ -31,10 +31,10 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
+    if (!isset($_GET["id"])) throw new Exception("404: genre not found");
+
     $pdo = $ctx["pdo"];
     $genre_id = $_GET["id"];
-
-    if (!$genre_id) throw new Exception("404: genre not found");
 
     $s = $pdo->prepare("select name from genre where id = ?");
     $s->execute([$genre_id]);
@@ -50,7 +50,7 @@ function handle_detail($ctx)
     $s->setFetchMode(PDO::FETCH_CLASS, "Books\Model");
     $books = $s->fetchAll();
 
-    Net\render_view("genres/detail.php", [
+    Net\render_view("genres/detail", [
         "title" => "Genre Detail",
         "genre" => $genre,
         "books" => $books,
@@ -59,7 +59,7 @@ function handle_detail($ctx)
 
 function handle_create($ctx)
 {
-    Net\render_view("genres/create.php", ["title" => "Create Genre"]);
+    Net\render_view("genres/create", ["title" => "Create Genre"]);
 }
 
 function handle_store($ctx)
@@ -76,7 +76,7 @@ function handle_store($ctx)
 
     if ($errors)
     {
-        Net\render_view("genres/create.php", [
+        Net\render_view("genres/create", [
             "title" => "Create Genre",
             "genre" => $genre,
             "errors" => $errors

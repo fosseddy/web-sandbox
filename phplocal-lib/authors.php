@@ -48,7 +48,7 @@ function handle_index($ctx)
                      "date_of_death from author order by family_name",
                      PDO::FETCH_CLASS, "Authors\Model");
 
-    Net\render_view("authors/index.php", [
+    Net\render_view("authors/index", [
         "title" => "Author List",
         "authors" => $s->fetchAll()
     ]);
@@ -56,10 +56,10 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
+    if (!isset($_GET["id"]) throw new Exception("404: author not found");
+
     $pdo = $ctx["pdo"];
     $author_id = $_GET["id"];
-
-    if (!$author_id) throw new Exception("404: author not found");
 
     $s = $pdo->prepare("select first_name, family_name, date_of_birth, " .
                        "date_of_death from author where id = ?");
@@ -76,9 +76,18 @@ function handle_detail($ctx)
 
     $books = $s->fetchAll();
 
-    Net\render_view("authors/detail.php", [
+    Net\render_view("authors/detail", [
         "title" => "Author Detail",
         "author" => $author,
         "books" => $books
     ]);
+}
+
+function handle_create($ctx)
+{
+    Net\render_view("authors/create", ["title" => "Create Author"]);
+}
+
+function handle_store($ctx)
+{
 }

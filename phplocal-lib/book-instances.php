@@ -63,7 +63,7 @@ function handle_index($ctx)
         $book_instances[] = $bi;
     }
 
-    Net\render_view("book-instances/index.php", [
+    Net\render_view("book-instances/index", [
         "title" => "Book Instances List",
         "book_instances" => $book_instances
     ]);
@@ -71,10 +71,10 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
+    if (!isset($_GET["id"]) throw new Exception("404: instance not found");
+
     $pdo = $ctx["pdo"];
     $book_instance_id = $_GET["id"];
-
-    if (!$book_instance_id) throw new Exception("404: instance not found");
 
     $s = $pdo->prepare("select BI.id, BI.imprint, BI.status, BI.due_back, " .
                       "B.title, B.id as b_id from book_instance as BI " .
@@ -96,7 +96,7 @@ function handle_detail($ctx)
     $bi->book->title = $data["title"];
     $bi->book->id = $data["b_id"];
 
-    Net\render_view("book-instances/detail.php", [
+    Net\render_view("book-instances/detail", [
         "title" => "Book:",
         "book_instance" => $bi
     ]);

@@ -4,6 +4,9 @@ namespace Net;
 
 use Exception;
 
+// TODO(art): handle errors
+// TODO(art): handle 404, 500, etc. events
+// TODO(art): middleware
 class Router
 {
     public $routes = [];
@@ -54,12 +57,12 @@ class Router
 function render_view($path, $vars = [])
 {
     extract($vars);
-    require_once from_base("views", $path);
+    require_once from_base("views", "$path.php");
 }
 
 function partial_view($path)
 {
-    return from_base("views", $path);
+    return from_base("views", "$path.php");
 }
 
 function redirect($url)

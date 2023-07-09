@@ -1,4 +1,4 @@
-<?php require_once Net\partial_view("layout/head.php") ?>
+<?php require_once Net\partial_view("layout/head") ?>
 
 <h1><?= $title ?></h1>
 
@@ -16,4 +16,4 @@
     <li><strong>Genres:</strong> <?= $genre["count"] ?></li>
 </ul>
 
-<?php require_once Net\partial_view("layout/footer.php") ?>
+<?php require_once Net\partial_view("layout/footer") ?>

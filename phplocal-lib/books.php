@@ -45,7 +45,7 @@ function handle_index($ctx)
         $books[] = $b;
     }
 
-    Net\render_view("books/index.php", [
+    Net\render_view("books/index", [
         "title" => "Book List",
         "books" => $books
     ]);
@@ -53,10 +53,10 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
+    if (!isset($_GET["id"]) throw new Exception("404: book not found");
+
     $pdo = $ctx["pdo"];
     $book_id = $_GET["id"];
-
-    if (!$book_id) throw new Exception("404: book not found");
 
     $s = $pdo->prepare("select B.title, B.summary, B.ISBN, A.id as a_id, " .
                        "A.first_name, A.family_name " .
@@ -91,7 +91,7 @@ function handle_detail($ctx)
     $s->setFetchMode(PDO::FETCH_CLASS, "Genres\Model");
     $genres = $s->fetchAll();
 
-    Net\render_view("books/detail.php", [
+    Net\render_view("books/detail", [
         "title" => "Book Detail",
         "book" => $book,
         "book_instances" => $book_instances,

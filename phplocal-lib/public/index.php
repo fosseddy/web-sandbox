@@ -33,6 +33,8 @@ $router->get("/books/detail", "Books\handle_detail");
 
 $router->get("/authors", "Authors\handle_index");
 $router->get("/authors/detail", "Authors\handle_detail");
+$router->get("/authors/create", "Authors\handle_create");
+$router->post("/authors/create", "Authors\handle_store");
 
 $router->get("/genres", "Genres\handle_index");
 $router->get("/genres/detail", "Genres\handle_detail");

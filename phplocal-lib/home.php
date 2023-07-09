@@ -19,7 +19,7 @@ function handle_index($ctx)
                      "where status = 0");
     $book_instance_available = $s->fetch();
 
-    Net\render_view("index.php", [
+    Net\render_view("index", [
         "title" => "Local Library Home",
         "book" => $book,
         "book_instance" => $book_instance,

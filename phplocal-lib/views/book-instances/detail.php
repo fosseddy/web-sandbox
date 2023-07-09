@@ -1,4 +1,4 @@
-<?php require_once Net\partial_view("layout/head.php") ?>
+<?php require_once Net\partial_view("layout/head") ?>
 
 <h1>ID: <?= $book_instance->id ?></h1>
 <p><strong>Title:</strong> <a href="<?= $book_instance->book->url() ?>"><?= $book_instance->book->title ?></a></p>
@@ -17,4 +17,4 @@
     <p><strong>Due back:</strong> <?= $book_instance->due_back_formatted() ?></p>
 <?php endif ?>
 
-<?php require_once Net\partial_view("layout/footer.php") ?>
+<?php require_once Net\partial_view("layout/footer") ?>
