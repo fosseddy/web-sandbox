@@ -56,7 +56,7 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
-    if (!isset($_GET["id"]) throw new Exception("404: author not found");
+    if (!isset($_GET["id"])) throw new Exception("404: author not found");
 
     $pdo = $ctx["pdo"];
     $author_id = $_GET["id"];

@@ -53,7 +53,7 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
-    if (!isset($_GET["id"]) throw new Exception("404: book not found");
+    if (!isset($_GET["id"])) throw new Exception("404: book not found");
 
     $pdo = $ctx["pdo"];
     $book_id = $_GET["id"];

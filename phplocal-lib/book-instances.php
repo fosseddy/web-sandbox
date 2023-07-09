@@ -71,7 +71,7 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
-    if (!isset($_GET["id"]) throw new Exception("404: instance not found");
+    if (!isset($_GET["id"])) throw new Exception("404: instance not found");
 
     $pdo = $ctx["pdo"];
     $book_instance_id = $_GET["id"];
