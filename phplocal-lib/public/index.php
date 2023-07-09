@@ -30,6 +30,8 @@ $router->get("/", "Home\handle_index");
 
 $router->get("/books", "Books\handle_index");
 $router->get("/books/detail", "Books\handle_detail");
+$router->get("/books/create", "Books\handle_create");
+$router->post("/books/create", "Books\handle_store");
 
 $router->get("/authors", "Authors\handle_index");
 $router->get("/authors/detail", "Authors\handle_detail");

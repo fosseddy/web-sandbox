@@ -90,4 +90,50 @@ function handle_create($ctx)
 
 function handle_store($ctx)
 {
+    $pdo = $ctx["pdo"];
+
+    $errors = [];
+    $a = new Model();
+
+    // TODO(art): validation
+    $a->first_name = htmlspecialchars(trim($_POST["first-name"] ?? ""));
+    $a->family_name = htmlspecialchars(trim($_POST["family-name"] ?? ""));
+    $a->date_of_birth = htmlspecialchars(trim($_POST["date-of-birth"] ?? ""));
+    $a->date_of_death = htmlspecialchars(trim($_POST["date-of-death"] ?? ""));
+
+    if ($errors)
+    {
+        Net\render_view("authors/create", [
+            "title" => "Create Author",
+            "author" => $a,
+            "errors" => $errors
+        ]);
+        return;
+    }
+
+    $s = $pdo->prepare("select id from author " .
+                       "where first_name = ? and family_name = ?");
+    $s->execute([$a->first_name, $a->family_name]);
+
+    if ($s->fetch())
+    {
+        $errors[] = "This author already exist";
+
+        Net\render_view("authors/create", [
+            "title" => "Create Author",
+            "author" => $a,
+            "errors" => $errors
+        ]);
+        return;
+    }
+
+    if (!$a->date_of_death) $a->date_of_death = null;
+
+    $s = $pdo->prepare("insert into author (first_name, family_name, " .
+                       "date_of_birth, date_of_death) values (?, ?, ?, ?)");
+    $s->execute([$a->first_name, $a->family_name, $a->date_of_birth,
+                 $a->date_of_death]);
+
+    $a->id = $pdo->lastInsertId();
+    Net\redirect($a->url());
 }

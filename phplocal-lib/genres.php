@@ -67,9 +67,9 @@ function handle_store($ctx)
     $pdo = $ctx["pdo"];
 
     $errors = [];
-    $genre = new Genres\Model();
+    $genre = new Model();
 
-    $genre->name = htmlspecialchars(trim($_POST["name"]));
+    $genre->name = htmlspecialchars(trim($_POST["name"] ?? ""));
     $namelen = strlen($genre->name);
 
     if ($namelen < 3 || $namelen > 255) $errors[] = "Genre name must be at least 3 characters long, but less than 255 characters";

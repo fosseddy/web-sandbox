@@ -36,12 +36,12 @@ main {
 .text-danger { color: red; }
 .text-warning { color: orange; }
 
-.form-group {
-    margin-bottom: 1rem;
-}
-
 .form-group label {
     font-weight: bold;
+}
+
+.form-group select {
+    display: block;
 }
 
 .form-group input {
@@ -51,6 +51,7 @@ main {
     margin-top: .375rem;
     border: 1px solid lightgray;
     border-radius: 5px;
+    margin-bottom: 1rem;
 }
 
 .btn {

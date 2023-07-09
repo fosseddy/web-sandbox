@@ -6,7 +6,7 @@
     <div class="form-group">
         <label>
             Genre:
-            <input value="<?= isset($genre) ? $genre->name : "" ?>" name="name" placeholder="Fantasy, Poetry, etc.">
+            <input value="<?= $genre->name ?? "" ?>" name="name" placeholder="Fantasy, Poetry, etc.">
         </label>
     </div>
     <button class="btn btn-primary" type="submit">Submit</button>

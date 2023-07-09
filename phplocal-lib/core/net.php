@@ -7,6 +7,7 @@ use Exception;
 // TODO(art): handle errors
 // TODO(art): handle 404, 500, etc. events
 // TODO(art): middleware
+// TODO(art): http errors
 class Router
 {
     public $routes = [];
