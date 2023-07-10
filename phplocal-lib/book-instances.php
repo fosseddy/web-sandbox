@@ -71,8 +71,6 @@ function handle_index($ctx)
 
 function handle_detail($ctx)
 {
-    if (!isset($_GET["id"])) throw new Exception("404: instance not found");
-
     $db = $ctx["db"];
     $book_instance_id = $_GET["id"];
 

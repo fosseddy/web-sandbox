@@ -6,21 +6,34 @@ use Exception;
 
 // TODO(art): handle errors
 // TODO(art): handle 404, 500, etc. events
-// TODO(art): middleware
 // TODO(art): http errors
 class Router
 {
     public $routes = [];
     public $ctx = [];
 
-    function get($uri, $handler)
+    function add($method, $uri, $middlewares, $handler = null)
     {
-        $this->routes[$uri]["GET"] = $handler;
+        if (gettype($middlewares) === "string")
+        {
+            $handler = $middlewares;
+            $middlewares = [];
+        }
+
+        $this->routes[$uri][$method] = [
+            "handler" => $handler,
+            "middlewares" => $middlewares,
+        ];
     }
 
-    function post($uri, $handler)
+    function get($uri, $middlewares, $handler = null)
     {
-        $this->routes[$uri]["POST"] = $handler;
+        $this->add("GET", $uri, $middlewares, $handler);
+    }
+
+    function post($uri, $middlewares, $handler = null)
+    {
+        $this->add("POST", $uri, $middlewares, $handler);
     }
 
     function resolve()
@@ -28,30 +41,18 @@ class Router
         $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
         $method = $_SERVER["REQUEST_METHOD"];
 
-        if (!array_key_exists($uri, $this->routes))
-        {
-            throw new Exception("route '$uri' does not exist");
-        }
+        if (!array_key_exists($uri, $this->routes)) throw new Exception("route '$uri' does not exist");
 
         $route = $this->routes[$uri];
 
-        if (!array_key_exists($method, $route))
+        if (!array_key_exists($method, $route)) throw new Exception("route '$uri' does not support method '$method'");
+
+        foreach ($route[$method]["middlewares"] as $it)
         {
-            throw new Exception("route '$uri' does not support method '$method'");
+            $it($this->ctx);
         }
 
-        $handler = $route[$method];
-
-        try
-        {
-            $handler($this->ctx);
-        }
-        catch (Exception $e)
-        {
-            // TODO(art): handle errors
-            error_log($e);
-            echo "<pre>$e</pre>";
-        }
+        $route[$method]["handler"]($this->ctx);
     }
 }
 
@@ -68,5 +69,5 @@ function partial_view($path)
 
 function redirect($url)
 {
-    header("Location: {$url}");
+    header("Location: $url");
 }
