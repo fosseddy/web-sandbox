@@ -2,7 +2,7 @@
 
 namespace Books;
 
-use PDO, Exception;
+use Exception;
 use Net, Authors;
 
 class Model
@@ -24,16 +24,16 @@ class Model
 
 function handle_index($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
-    $s = $pdo->query("select B.id, B.title, A.first_name, A.family_name " .
-                     "from book as B " .
-                     "left join author as A on B.author_id = A.id " .
-                     "order by B.title");
+    $data = $db->query_many("select B.id, B.title, A.first_name, " .
+                             "A.family_name from book as B " .
+                             "left join author as A on B.author_id = A.id " .
+                             "order by B.title");
 
     $books = [];
 
-    foreach($s->fetchAll() as $it)
+    foreach($data as $it)
     {
         $b = new Model();
         $b->author = new Authors\Model();
@@ -56,16 +56,14 @@ function handle_detail($ctx)
 {
     if (!isset($_GET["id"])) throw new Exception("404: book not found");
 
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
     $book_id = $_GET["id"];
 
-    $s = $pdo->prepare("select B.title, B.summary, B.ISBN, A.id as a_id, " .
-                       "A.first_name, A.family_name " .
-                       "from book as B " .
-                       "left join author as A on B.author_id = A.id " .
-                       "where B.id = ?");
-    $s->execute([$book_id]);
-    $data = $s->fetch();
+    $data = $db->query_one("select B.title, B.summary, B.ISBN, " .
+                           "A.id as a_id, A.first_name, A.family_name " .
+                           "from book as B " .
+                           "left join author as A on B.author_id = A.id " .
+                           "where B.id = ?", [$book_id]);
 
     if (!$data) throw new Exception("404: book not found");
 
@@ -79,18 +77,14 @@ function handle_detail($ctx)
     $book->author->first_name = $data["first_name"];
     $book->author->family_name = $data["family_name"];
 
-    $s = $pdo->prepare("select id, status, imprint, due_back " .
-                       "from book_instance where book_id = ?");
-    $s->execute([$book_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Book_Instances\Model");
-    $book_instances = $s->fetchAll();
+    $book_instances = $db->query_many("select id, status, imprint, due_back " .
+                                      "from book_instance where book_id = ?",
+                                      [$book_id], "Book_Instances\Model");
 
-    $s = $pdo->prepare("select G.id, G.name from genre as G " .
-                       "left join book_genres as BG on G.id = BG.genre_id " .
-                       "where BG.book_id = ?");
-    $s->execute([$book_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Genres\Model");
-    $genres = $s->fetchAll();
+    $genres = $db->query_many("select G.id, G.name from genre as G " .
+                              "left join book_genres as BG " .
+                              "on G.id = BG.genre_id where BG.book_id = ?",
+                              [$book_id], "Genres\Model");
 
     Net\render_view("books/detail", [
         "title" => "Book Detail",
@@ -102,16 +96,13 @@ function handle_detail($ctx)
 
 function handle_create($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
-    $s = $pdo->query("select id, first_name, family_name from author " .
-                     "order by family_name",
-                     PDO::FETCH_CLASS, "Authors\Model");
-    $authors = $s->fetchAll();
+    $authors = $db->query_many("select id, first_name, family_name " .
+                               "from author order by family_name",
+                               "Authors\Model");
 
-    $s = $pdo->query("select id, name from genre", PDO::FETCH_CLASS,
-                     "Genres\Model");
-    $genres = $s->fetchAll();
+    $genres = $db->query_many("select id, name from genre", "Genres\Model");
 
     Net\render_view("books/create", [
         "title" => "Create Book",
@@ -122,7 +113,7 @@ function handle_create($ctx)
 
 function handle_store($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
     $b = new Model();
     $errors = [];
 
@@ -143,14 +134,12 @@ function handle_store($ctx)
 
     if ($errors)
     {
-        $s = $pdo->query("select id, first_name, family_name from author " .
-                         "order by family_name",
-                         PDO::FETCH_CLASS, "Authors\Model");
-        $authors = $s->fetchAll();
+        $authors = $db->query_many("select id, first_name, family_name " .
+                                   "from author order by family_name", [],
+                                   "Authors\Model");
 
-        $s = $pdo->query("select id, name from genre", PDO::FETCH_CLASS,
-                         "Genres\Model");
-        $genres = $s->fetchAll();
+        $genres = $db->query_many("select id, name from genre", [],
+                                  "Genres\Model");
 
         Net\render_view("books/create", [
             "title" => "Create Book",
@@ -159,13 +148,12 @@ function handle_store($ctx)
             "genres" => $genres,
             "errors" => $errors
         ]);
-        return;
+        exit;
     }
 
-    $s = $pdo->prepare("select id from book where ISBN = ?");
-    $s->execute([$b->ISBN]);
+    $data = $db->query_one("select id from book where ISBN = ?", [$b->ISBN]);
 
-    if ($s->fetch())
+    if ($data)
     {
         $errors[] = "Book with this ISBN already exist";
 
@@ -176,18 +164,17 @@ function handle_store($ctx)
             "genres" => $genres,
             "errors" => $errors
         ]);
-        return;
+        exit;
     }
 
-    $pdo->beginTransaction();
-
+    $db->pdo->beginTransaction();
     try
     {
-        $s = $pdo->prepare("insert into book (title, author_id, summary, ISBN) " .
-                           "values (?, ?, ?, ?)");
-        $s->execute([$b->title, $b->author_id, $b->summary, $b->ISBN]);
+        $db->exec("insert into book (title, author_id, summary, ISBN) " .
+                  "values (?, ?, ?, ?)",
+                  [$b->title, $b->author_id, $b->summary, $b->ISBN]);
 
-        $b->id = $pdo->lastInsertId();
+        $b->id = $db->pdo->lastInsertId();
 
         $sql = "insert into book_genres (book_id, genre_id) values ";
         $binds = [];
@@ -199,14 +186,12 @@ function handle_store($ctx)
             $binds[] = $g_id;
         }
 
-        $s = $pdo->prepare($sql);
-        $s->execute($binds);
-
-        $pdo->commit();
+        $db->exec($sql, $binds);
+        $db->pdo->commit();
     }
     catch (Exception $e)
     {
-        $pdo->rollBack();
+        $db->pdo->rollBack();
         throw $e;
     }
 

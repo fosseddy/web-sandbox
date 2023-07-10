@@ -2,7 +2,7 @@
 
 namespace Genres;
 
-use PDO, Exception;
+use Exception;
 use Net, Genres;
 
 class Model
@@ -18,14 +18,14 @@ class Model
 
 function handle_index($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
-    $s = $pdo->query("select id, name from genre order by name",
-                    PDO::FETCH_CLASS, "Genres\Model");
+    $genres = $db->query_many("select id, name from genre order by name",
+                              "Genres\Model");
 
     Net\render_view("genres/index", [
         "title" => "Genre List",
-        "genres" => $s->fetchAll()
+        "genres" => $genres
     ]);
 }
 
@@ -33,22 +33,18 @@ function handle_detail($ctx)
 {
     if (!isset($_GET["id"])) throw new Exception("404: genre not found");
 
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
     $genre_id = $_GET["id"];
 
-    $s = $pdo->prepare("select name from genre where id = ?");
-    $s->execute([$genre_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Genres\Model");
-    $genre = $s->fetch();
+    $genre = $db->query_one("select name from genre where id = ?", [$genre_id],
+                            "Genres\Model");
 
     if (!$genre) throw new Exception("404: genre not found");
 
-    $s = $pdo->prepare("select B.id, B.title, B.summary from book as B " .
-                      "left join book_genres as BG on B.id = BG.book_id " .
-                      "where BG.genre_id = ?");
-    $s->execute([$genre_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Books\Model");
-    $books = $s->fetchAll();
+    $books = $db->query_many("select B.id, B.title, B.summary " .
+                             "from book as B left join book_genres as BG " .
+                             "on B.id = BG.book_id where BG.genre_id = ?",
+                             [$genre_id], "Books\Model");
 
     Net\render_view("genres/detail", [
         "title" => "Genre Detail",
@@ -64,7 +60,7 @@ function handle_create($ctx)
 
 function handle_store($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
     $errors = [];
     $genre = new Model();
@@ -81,23 +77,20 @@ function handle_store($ctx)
             "genre" => $genre,
             "errors" => $errors
         ]);
-        return;
+        exit;
     }
 
-    $s = $pdo->prepare("select id from genre where name = ?");
-    $s->execute([$genre->name]);
-    $s->setFetchMode(PDO::FETCH_INTO, $genre);
-    $s->fetch();
+    $db->query_one("select id from genre where name = ?", [$genre->name],
+                   $genre);
 
     if ($genre->id)
     {
         Net\redirect($genre->url());
-        return;
+        exit;
     }
 
-    $s = $pdo->prepare("insert into genre (name) values (?)");
-    $s->execute([$genre->name]);
+    $db->exec("insert into genre (name) values (?)", [$genre->name]);
 
-    $genre->id = $pdo->lastInsertId();
+    $genre->id = $db->pdo->lastInsertId();
     Net\redirect($genre->url());
 }

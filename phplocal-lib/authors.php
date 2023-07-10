@@ -2,7 +2,7 @@
 
 namespace Authors;
 
-use PDO, Exception;
+use Exception;
 use Net;
 
 class Model
@@ -42,15 +42,15 @@ class Model
 
 function handle_index($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
-    $s = $pdo->query("select id, first_name, family_name, date_of_birth, " .
-                     "date_of_death from author order by family_name",
-                     PDO::FETCH_CLASS, "Authors\Model");
+    $authors = $db->query_many("select id, first_name, family_name, " .
+                               "date_of_birth, date_of_death from author " .
+                               "order by family_name", "Authors\Model");
 
     Net\render_view("authors/index", [
         "title" => "Author List",
-        "authors" => $s->fetchAll()
+        "authors" => $authors
     ]);
 }
 
@@ -58,23 +58,18 @@ function handle_detail($ctx)
 {
     if (!isset($_GET["id"])) throw new Exception("404: author not found");
 
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
     $author_id = $_GET["id"];
 
-    $s = $pdo->prepare("select first_name, family_name, date_of_birth, " .
-                       "date_of_death from author where id = ?");
-    $s->execute([$author_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Authors\Model");
-    $author = $s->fetch();
+    $author = $db->query_one("select first_name, family_name, " .
+                             "date_of_birth, date_of_death from author " .
+                             "where id = ?", [$author_id], "Authors\Model");
 
     if (!$author) throw new Exception("404: author not found");
 
-    $s = $pdo->prepare("select id, title, summary from book " .
-                       "where author_id = ?");
-    $s->execute([$author_id]);
-    $s->setFetchMode(PDO::FETCH_CLASS, "Books\Model");
-
-    $books = $s->fetchAll();
+    $books = $db->query_many("select id, title, summary from book " .
+                             "where author_id = ?", [$author_id],
+                             "Books\Model");
 
     Net\render_view("authors/detail", [
         "title" => "Author Detail",
@@ -90,7 +85,7 @@ function handle_create($ctx)
 
 function handle_store($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
     $errors = [];
     $a = new Model();
@@ -108,14 +103,14 @@ function handle_store($ctx)
             "author" => $a,
             "errors" => $errors
         ]);
-        return;
+        exit;
     }
 
-    $s = $pdo->prepare("select id from author " .
-                       "where first_name = ? and family_name = ?");
-    $s->execute([$a->first_name, $a->family_name]);
+    $data = $db->query_one("select id from author " .
+                           "where first_name = ? and family_name = ?",
+                           [$a->first_name, $a->family_name]);
 
-    if ($s->fetch())
+    if ($data)
     {
         $errors[] = "This author already exist";
 
@@ -124,16 +119,16 @@ function handle_store($ctx)
             "author" => $a,
             "errors" => $errors
         ]);
-        return;
+        exit;
     }
 
     if (!$a->date_of_death) $a->date_of_death = null;
 
-    $s = $pdo->prepare("insert into author (first_name, family_name, " .
-                       "date_of_birth, date_of_death) values (?, ?, ?, ?)");
-    $s->execute([$a->first_name, $a->family_name, $a->date_of_birth,
-                 $a->date_of_death]);
+    $db->exec("insert into author (first_name, family_name, date_of_birth, " .
+              "date_of_death) values (?, ?, ?, ?)",
+              [$a->first_name, $a->family_name, $a->date_of_birth,
+               $a->date_of_death]);
 
-    $a->id = $pdo->lastInsertId();
+    $a->id = $db->pdo->lastInsertId();
     Net\redirect($a->url());
 }

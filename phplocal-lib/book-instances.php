@@ -41,15 +41,15 @@ class Model
 
 function handle_index($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
-    $s = $pdo->query("select BI.id, BI.imprint, BI.status, BI.due_back, " .
-                        "B.title from book_instance as BI " .
-                        "left join book as B on BI.book_id = B.id");
+    $data = $db->query_many("select BI.id, BI.imprint, BI.status, " .
+                            "BI.due_back, B.title from book_instance as BI " .
+                            "left join book as B on BI.book_id = B.id");
 
     $book_instances = [];
 
-    foreach($s->fetchAll() as $it)
+    foreach($data as $it)
     {
         $bi = new Model();
         $bi->book = new Books\Model();
@@ -73,15 +73,14 @@ function handle_detail($ctx)
 {
     if (!isset($_GET["id"])) throw new Exception("404: instance not found");
 
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
     $book_instance_id = $_GET["id"];
 
-    $s = $pdo->prepare("select BI.id, BI.imprint, BI.status, BI.due_back, " .
-                      "B.title, B.id as b_id from book_instance as BI " .
-                      "left join book as B on BI.book_id = B.id " .
-                      "where BI.id = ?");
-    $s->execute([$book_instance_id]);
-    $data = $s->fetch();
+    $data = $db->query_one("select BI.id, BI.imprint, BI.status, " .
+                           "BI.due_back, B.title, B.id as b_id " .
+                           "from book_instance as BI left join book as B " .
+                           "on BI.book_id = B.id where BI.id = ?",
+                           [$book_instance_id]);
 
     if (!$data) throw new Exception("404: instance not found");
 

@@ -12,8 +12,8 @@ function debug($val)
     echo "</pre>";
 }
 
-require_once from_base("core/net.php");
-require_once from_base("core/database.php");
+require_once from_base("../phpcore/net.php");
+require_once from_base("../phpcore/database.php");
 
 require_once from_base("home.php");
 require_once from_base("books.php");
@@ -23,7 +23,8 @@ require_once from_base("book-instances.php");
 
 $router = new Net\Router();
 $router->ctx = [
-    "pdo" => Database\connect("localhost", "local_lib", "art", "qweqwe123")
+    "db" => new Database\Connection("localhost", "local_lib", "art",
+                                    "qweqwe123")
 ];
 
 $router->get("/", "Home\handle_index");

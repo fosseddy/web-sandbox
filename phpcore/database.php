@@ -33,6 +33,12 @@ class Connection
 
     function query($q, $vals = [], $container = null)
     {
+        if (gettype($vals) !== "array")
+        {
+            $container = $vals;
+            $vals = [];
+        }
+
         $this->exec($q, $vals);
 
         if ($container)

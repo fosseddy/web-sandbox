@@ -6,18 +6,18 @@ use Net;
 
 function handle_index($ctx)
 {
-    $pdo = $ctx["pdo"];
+    $db = $ctx["db"];
 
-    $author = $pdo->query("select count(*) as count from author")->fetch();
-    $book = $pdo->query("select count(*) as count from book")->fetch();
-    $genre = $pdo->query("select count(*) as count from genre")->fetch();
+    $author = $db->query_one("select count(*) as count from author");
+    $book = $db->query_one("select count(*) as count from book");
+    $genre = $db->query_one("select count(*) as count from genre");
 
-    $s = $pdo->query("select count(*) as count from book_instance");
-    $book_instance = $s->fetch();
+    $book_instance = $db->query_one("select count(*) as count " .
+                                    "from book_instance");
 
-    $s = $pdo->query("select count(*) as count from book_instance " .
-                     "where status = 0");
-    $book_instance_available = $s->fetch();
+    $book_instance_available = $db->query_one("select count(*) as count " .
+                                              "from book_instance " .
+                                              "where status = 0");
 
     Net\render_view("index", [
         "title" => "Local Library Home",
