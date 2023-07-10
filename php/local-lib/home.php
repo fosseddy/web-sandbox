@@ -1,8 +1,8 @@
 <?php
 
-namespace Home;
+namespace home;
 
-use Net;
+use web;
 
 function handle_index($ctx)
 {
@@ -11,19 +11,17 @@ function handle_index($ctx)
     $author = $db->query_one("select count(*) as count from author");
     $book = $db->query_one("select count(*) as count from book");
     $genre = $db->query_one("select count(*) as count from genre");
+    $bi = $db->query_one("select count(*) as count from book_instance");
 
-    $book_instance = $db->query_one("select count(*) as count " .
-                                    "from book_instance");
+    $bi_available = $db->query_one(
+        "select count(*) as count from book_instance where status = 0"
+    );
 
-    $book_instance_available = $db->query_one("select count(*) as count " .
-                                              "from book_instance " .
-                                              "where status = 0");
-
-    Net\render_view("index", [
+    web\render_view("index", [
         "title" => "Local Library Home",
         "book" => $book,
-        "book_instance" => $book_instance,
-        "book_instance_available" => $book_instance_available,
+        "book_instance" => $bi,
+        "book_instance_available" => $bi_available,
         "author" => $author,
         "genre" => $genre,
     ]);

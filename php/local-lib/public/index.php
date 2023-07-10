@@ -1,6 +1,7 @@
 <?php
 
 const BASE_DIR = __DIR__ . "/..";
+const CORE_DIR = BASE_DIR . "/../core";
 
 function debug($val)
 {
@@ -9,44 +10,59 @@ function debug($val)
     echo "</pre>";
 }
 
-require_once BASE_DIR . "/../phpcore/net.php";
-require_once Path\from_base("../phpcore/database.php");
+require_once CORE_DIR . "/web.php";
+require_once CORE_DIR . "/database.php";
 
-require_once Path\from_base("home.php");
-require_once Path\from_base("books.php");
-require_once Path\from_base("authors.php");
-require_once Path\from_base("genres.php");
-require_once Path\from_base("book-instances.php");
+require_once path\from_base("home.php");
+require_once path\from_base("books.php");
+require_once path\from_base("authors.php");
+require_once path\from_base("genres.php");
+require_once path\from_base("book-instances.php");
 
-$router = new Net\Router();
+$router = new web\Router();
 $router->ctx = [
-    "db" => new Database\Connection("localhost", "local_lib", "art", "qweqwe123")
+    "db" => new database\Connection("localhost", "local_lib", "art", "qweqwe123")
 ];
 
-$router->get("/", "Home\handle_index");
+$router->get("/", "home\handle_index");
 
-$router->get("/books", "Books\handle_index");
-$router->get("/books/detail", "Books\handle_detail", ["with_query_id"]);
-$router->get("/books/create", "Books\handle_create");
-$router->post("/books/create", "Books\handle_store");
+$router->get("/books", "books\handle_index");
+$router->get("/books/detail", "books\handle_detail", ["with_query_id"]);
+$router->get("/books/create", "books\handle_create");
+$router->post("/books/create", "books\handle_store");
 
-$router->get("/authors", "Authors\handle_index");
-$router->get("/authors/detail", "Authors\handle_detail", ["with_query_id"]);
-$router->get("/authors/create", "Authors\handle_create");
-$router->post("/authors/create", "Authors\handle_store");
+$router->get("/authors", "authors\handle_index");
+$router->get("/authors/detail", "authors\handle_detail", ["with_query_id"]);
+$router->get("/authors/create", "authors\handle_create");
+$router->post("/authors/create", "authors\handle_store");
 
-$router->get("/genres", "Genres\handle_index");
-$router->get("/genres/detail", "Genres\handle_detail", ["with_query_id"]);
-$router->get("/genres/create", "Genres\handle_create");
-$router->post("/genres/create", "Genres\handle_store");
+$router->get("/genres", "genres\handle_index");
+$router->get("/genres/detail", "genres\handle_detail", ["with_query_id"]);
+$router->get("/genres/create", "genres\handle_create");
+$router->post("/genres/create", "genres\handle_store");
 
-$router->get("/book-instances", "Book_Instances\handle_index");
-$router->get("/book-instances/detail", "Book_Instances\handle_detail", ["with_query_id"]);
+$router->get("/book-instances", "book_instances\handle_index");
+$router->get("/book-instances/detail", "book_instances\handle_detail", ["with_query_id"]);
 
-$router->resolve();
+try
+{
+    $router->resolve();
+}
+catch (http\Not_Found $e)
+{
+    http_response_code(404);
+    web\render_view("error", ["title" => "Page Not Found"]);
+}
+catch (Exception $e)
+{
+    http_response_code(500);
+    web\render_view("error", [
+        "title" => "Something went wrong and it is not your fault"
+    ]);
+}
 
 function with_query_id()
 {
     $id = $_GET["id"] ?? "";
-    if (!$id) throw new Exception("400: id is required");
+    if (!$id) throw new http\Not_Found();
 }

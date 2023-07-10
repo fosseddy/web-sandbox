@@ -1,14 +1,14 @@
 <?php
 
-// TODO(art): http errors
-// TODO(art): when route handler throws what should happen?
+// TODO(art): something for REST api?
 
-namespace Net;
+namespace web;
 
 require_once __DIR__ . "/path.php";
+require_once __DIR__ . "/http.php";
 
 use Exception;
-use Path;
+use path, http;
 
 class Router
 {
@@ -40,7 +40,7 @@ class Router
 
         $route = $this->routes[$uri][$method] ?? null;
 
-        if (!$route) throw new Exception("route '$method $uri' does not exist");
+        if (!$route) throw new http\Not_Found("route '$method $uri' does not exist");
 
         foreach ($route["middleware"] as $it)
         {

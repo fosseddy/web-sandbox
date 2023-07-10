@@ -1,9 +1,8 @@
 <?php
 
-namespace Authors;
+namespace authors;
 
-use Exception;
-use Net;
+use web, http;
 
 class Model
 {
@@ -44,11 +43,13 @@ function handle_index($ctx)
 {
     $db = $ctx["db"];
 
-    $authors = $db->query_many("select id, first_name, family_name, " .
-                               "date_of_birth, date_of_death from author " .
-                               "order by family_name", "Authors\Model");
+    $authors = $db->query_many(
+        "select id, first_name, family_name, date_of_birth, date_of_death
+         from author order by family_name",
+        "authors\Model"
+    );
 
-    Net\render_view("authors/index", [
+    web\render_view("authors/index", [
         "title" => "Author List",
         "authors" => $authors
     ]);
@@ -59,17 +60,22 @@ function handle_detail($ctx)
     $db = $ctx["db"];
     $author_id = $_GET["id"];
 
-    $author = $db->query_one("select first_name, family_name, " .
-                             "date_of_birth, date_of_death from author " .
-                             "where id = ?", [$author_id], "Authors\Model");
+    $author = $db->query_one(
+        "select first_name, family_name, date_of_birth, date_of_death
+         from author where id = ?",
+        [$author_id],
+        "authors\Model"
+    );
 
-    if (!$author) throw new Exception("404: author not found");
+    if (!$author) throw new http\Not_Found();
 
-    $books = $db->query_many("select id, title, summary from book " .
-                             "where author_id = ?", [$author_id],
-                             "Books\Model");
+    $books = $db->query_many(
+        "select id, title, summary from book where author_id = ?",
+        [$author_id],
+        "books\Model"
+    );
 
-    Net\render_view("authors/detail", [
+    web\render_view("authors/detail", [
         "title" => "Author Detail",
         "author" => $author,
         "books" => $books
@@ -78,7 +84,7 @@ function handle_detail($ctx)
 
 function handle_create($ctx)
 {
-    Net\render_view("authors/create", ["title" => "Create Author"]);
+    web\render_view("authors/create", ["title" => "Create Author"]);
 }
 
 function handle_store($ctx)
@@ -96,7 +102,7 @@ function handle_store($ctx)
 
     if ($errors)
     {
-        Net\render_view("authors/create", [
+        web\render_view("authors/create", [
             "title" => "Create Author",
             "author" => $a,
             "errors" => $errors
@@ -104,15 +110,16 @@ function handle_store($ctx)
         exit;
     }
 
-    $data = $db->query_one("select id from author " .
-                           "where first_name = ? and family_name = ?",
-                           [$a->first_name, $a->family_name]);
+    $data = $db->query_one(
+        "select id from author where first_name = ? and family_name = ?",
+        [$a->first_name, $a->family_name]
+    );
 
     if ($data)
     {
         $errors[] = "This author already exist";
 
-        Net\render_view("authors/create", [
+        web\render_view("authors/create", [
             "title" => "Create Author",
             "author" => $a,
             "errors" => $errors
@@ -122,11 +129,13 @@ function handle_store($ctx)
 
     if (!$a->date_of_death) $a->date_of_death = null;
 
-    $db->exec("insert into author (first_name, family_name, date_of_birth, " .
-              "date_of_death) values (?, ?, ?, ?)",
-              [$a->first_name, $a->family_name, $a->date_of_birth,
-               $a->date_of_death]);
+    $db->exec(
+        "insert into author
+             (first_name, family_name, date_of_birth, date_of_death)
+         values (?, ?, ?, ?)",
+        [$a->first_name, $a->family_name, $a->date_of_birth, $a->date_of_death]
+    );
 
     $a->id = $db->pdo->lastInsertId();
-    Net\redirect($a->url());
+    web\redirect($a->url());
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Books;
+namespace books;
 
-use Exception;
-use Net, Authors;
+use PDOException;
+use web, http, authors;
 
 class Model
 {
@@ -26,17 +26,19 @@ function handle_index($ctx)
 {
     $db = $ctx["db"];
 
-    $data = $db->query_many("select B.id, B.title, A.first_name, " .
-                             "A.family_name from book as B " .
-                             "left join author as A on B.author_id = A.id " .
-                             "order by B.title");
+    $data = $db->query_many(
+        "select B.id, B.title,
+                A.first_name, A.family_name
+         from book as B
+         left join author as A on B.author_id = A.id
+         order by B.title"
+    );
 
     $books = [];
-
     foreach($data as $it)
     {
         $b = new Model();
-        $b->author = new Authors\Model();
+        $b->author = new authors\Model();
 
         $b->id = $it["id"];
         $b->title = $it["title"];
@@ -46,7 +48,7 @@ function handle_index($ctx)
         $books[] = $b;
     }
 
-    Net\render_view("books/index", [
+    web\render_view("books/index", [
         "title" => "Book List",
         "books" => $books
     ]);
@@ -57,13 +59,16 @@ function handle_detail($ctx)
     $db = $ctx["db"];
     $book_id = $_GET["id"];
 
-    $data = $db->query_one("select B.title, B.summary, B.ISBN, " .
-                           "A.id as a_id, A.first_name, A.family_name " .
-                           "from book as B " .
-                           "left join author as A on B.author_id = A.id " .
-                           "where B.id = ?", [$book_id]);
+    $data = $db->query_one(
+        "select B.title, B.summary, B.ISBN,
+                A.id as a_id, A.first_name, A.family_name
+         from book as B
+         left join author as A on B.author_id = A.id
+         where B.id = ?",
+        [$book_id]
+    );
 
-    if (!$data) throw new Exception("404: book not found");
+    if (!$data) throw new http\Not_Found();
 
     $book = new Model();
     $book->author = new Authors\Model();
@@ -75,16 +80,22 @@ function handle_detail($ctx)
     $book->author->first_name = $data["first_name"];
     $book->author->family_name = $data["family_name"];
 
-    $book_instances = $db->query_many("select id, status, imprint, due_back " .
-                                      "from book_instance where book_id = ?",
-                                      [$book_id], "Book_Instances\Model");
+    $book_instances = $db->query_many(
+        "select id, status, imprint, due_back from book_instance
+         where book_id = ?",
+        [$book_id],
+        "book_instances\Model"
+    );
 
-    $genres = $db->query_many("select G.id, G.name from genre as G " .
-                              "left join book_genres as BG " .
-                              "on G.id = BG.genre_id where BG.book_id = ?",
-                              [$book_id], "Genres\Model");
+    $genres = $db->query_many(
+        "select G.id, G.name from genre as G
+         left join book_genres as BG on G.id = BG.genre_id
+         where BG.book_id = ?",
+        [$book_id],
+        "genres\Model"
+    );
 
-    Net\render_view("books/detail", [
+    web\render_view("books/detail", [
         "title" => "Book Detail",
         "book" => $book,
         "book_instances" => $book_instances,
@@ -96,13 +107,14 @@ function handle_create($ctx)
 {
     $db = $ctx["db"];
 
-    $authors = $db->query_many("select id, first_name, family_name " .
-                               "from author order by family_name",
-                               "Authors\Model");
+    $authors = $db->query_many(
+        "select id, first_name, family_name from author order by family_name",
+        "authors\Model"
+    );
 
-    $genres = $db->query_many("select id, name from genre", "Genres\Model");
+    $genres = $db->query_many("select id, name from genre", "genres\Model");
 
-    Net\render_view("books/create", [
+    web\render_view("books/create", [
         "title" => "Create Book",
         "authors" => $authors,
         "genres" => $genres
@@ -132,14 +144,15 @@ function handle_store($ctx)
 
     if ($errors)
     {
-        $authors = $db->query_many("select id, first_name, family_name " .
-                                   "from author order by family_name", [],
-                                   "Authors\Model");
+        $authors = $db->query_many(
+            "select id, first_name, family_name from author
+             order by family_name",
+            "authors\Model"
+        );
 
-        $genres = $db->query_many("select id, name from genre", [],
-                                  "Genres\Model");
+        $genres = $db->query_many("select id, name from genre", "genres\Model");
 
-        Net\render_view("books/create", [
+        web\render_view("books/create", [
             "title" => "Create Book",
             "book" => $b,
             "authors" => $authors,
@@ -155,7 +168,7 @@ function handle_store($ctx)
     {
         $errors[] = "Book with this ISBN already exist";
 
-        Net\render_view("books/create", [
+        web\render_view("books/create", [
             "title" => "Create Book",
             "book" => $b,
             "authors" => $authors,
@@ -168,9 +181,11 @@ function handle_store($ctx)
     $db->pdo->beginTransaction();
     try
     {
-        $db->exec("insert into book (title, author_id, summary, ISBN) " .
-                  "values (?, ?, ?, ?)",
-                  [$b->title, $b->author_id, $b->summary, $b->ISBN]);
+        $db->exec(
+            "insert into book (title, author_id, summary, ISBN)
+             values (?, ?, ?, ?)",
+            [$b->title, $b->author_id, $b->summary, $b->ISBN],
+        );
 
         $b->id = $db->pdo->lastInsertId();
 
@@ -187,11 +202,11 @@ function handle_store($ctx)
         $db->exec($sql, $binds);
         $db->pdo->commit();
     }
-    catch (Exception $e)
+    catch (PDOException $e)
     {
         $db->pdo->rollBack();
         throw $e;
     }
 
-    Net\redirect($b->url());
+    web\redirect($b->url());
 }

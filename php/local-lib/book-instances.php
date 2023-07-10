@@ -1,9 +1,8 @@
 <?php
 
-namespace Book_Instances;
+namespace book_instances;
 
-use Exception;
-use Net, Books;
+use web, http, books;
 
 class Model
 {
@@ -43,12 +42,13 @@ function handle_index($ctx)
 {
     $db = $ctx["db"];
 
-    $data = $db->query_many("select BI.id, BI.imprint, BI.status, " .
-                            "BI.due_back, B.title from book_instance as BI " .
-                            "left join book as B on BI.book_id = B.id");
+    $data = $db->query_many(
+        "select BI.id, BI.imprint, BI.status, BI.due_back, B.title
+         from book_instance as BI
+         left join book as B on BI.book_id = B.id"
+    );
 
     $book_instances = [];
-
     foreach($data as $it)
     {
         $bi = new Model();
@@ -63,7 +63,7 @@ function handle_index($ctx)
         $book_instances[] = $bi;
     }
 
-    Net\render_view("book-instances/index", [
+    web\render_view("book-instances/index", [
         "title" => "Book Instances List",
         "book_instances" => $book_instances
     ]);
@@ -74,13 +74,16 @@ function handle_detail($ctx)
     $db = $ctx["db"];
     $book_instance_id = $_GET["id"];
 
-    $data = $db->query_one("select BI.id, BI.imprint, BI.status, " .
-                           "BI.due_back, B.title, B.id as b_id " .
-                           "from book_instance as BI left join book as B " .
-                           "on BI.book_id = B.id where BI.id = ?",
-                           [$book_instance_id]);
+    $data = $db->query_one(
+        "select BI.id, BI.imprint, BI.status, BI.due_back,
+                B.title, B.id as b_id
+         from book_instance as BI
+         left join book as B on BI.book_id = B.id
+         where BI.id = ?",
+        [$book_instance_id]
+    );
 
-    if (!$data) throw new Exception("404: instance not found");
+    if (!$data) throw new http\Not_Found();
 
     $bi = new Model();
     $bi->book = new Books\Model();
@@ -93,7 +96,7 @@ function handle_detail($ctx)
     $bi->book->title = $data["title"];
     $bi->book->id = $data["b_id"];
 
-    Net\render_view("book-instances/detail", [
+    web\render_view("book-instances/detail", [
         "title" => "Book:",
         "book_instance" => $bi
     ]);

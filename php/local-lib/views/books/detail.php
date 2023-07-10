@@ -1,4 +1,4 @@
-<?php require_once Net\partial_view("layout/head") ?>
+<?php require_once web\partial_view("layout/head") ?>
 
 <h1>Title: <?= $book->title ?></h1>
 
@@ -38,4 +38,4 @@
     <?php endif ?>
 </div>
 
-<?php require_once Net\partial_view("layout/footer") ?>
+<?php require_once web\partial_view("layout/footer") ?>
