@@ -1,39 +1,36 @@
 <?php
 
+// TODO(art): http errors
+// TODO(art): when route handler throws what should happen?
+
 namespace Net;
 
-use Exception;
+require_once __DIR__ . "/path.php";
 
-// TODO(art): handle errors
-// TODO(art): handle 404, 500, etc. events
-// TODO(art): http errors
+use Exception;
+use Path;
+
 class Router
 {
     public $routes = [];
     public $ctx = [];
 
-    function add($method, $uri, $middlewares, $handler = null)
+    function add($method, $uri, $handler, $middleware = [])
     {
-        if (gettype($middlewares) === "string")
-        {
-            $handler = $middlewares;
-            $middlewares = [];
-        }
-
         $this->routes[$uri][$method] = [
             "handler" => $handler,
-            "middlewares" => $middlewares,
+            "middleware" => $middleware
         ];
     }
 
-    function get($uri, $middlewares, $handler = null)
+    function get($uri, $handler, $middleware = [])
     {
-        $this->add("GET", $uri, $middlewares, $handler);
+        $this->add("GET", $uri, $handler, $middleware);
     }
 
-    function post($uri, $middlewares, $handler = null)
+    function post($uri, $handler, $middleware = [])
     {
-        $this->add("POST", $uri, $middlewares, $handler);
+        $this->add("POST", $uri, $handler, $middleware);
     }
 
     function resolve()
@@ -41,30 +38,28 @@ class Router
         $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
         $method = $_SERVER["REQUEST_METHOD"];
 
-        if (!array_key_exists($uri, $this->routes)) throw new Exception("route '$uri' does not exist");
+        $route = $this->routes[$uri][$method] ?? null;
 
-        $route = $this->routes[$uri];
+        if (!$route) throw new Exception("route '$method $uri' does not exist");
 
-        if (!array_key_exists($method, $route)) throw new Exception("route '$uri' does not support method '$method'");
-
-        foreach ($route[$method]["middlewares"] as $it)
+        foreach ($route["middleware"] as $it)
         {
             $it($this->ctx);
         }
 
-        $route[$method]["handler"]($this->ctx);
+        $route["handler"]($this->ctx);
     }
 }
 
 function render_view($path, $vars = [])
 {
     extract($vars);
-    require_once from_base("views", "$path.php");
+    require_once Path\from_base("views", "$path.php");
 }
 
 function partial_view($path)
 {
-    return from_base("views", "$path.php");
+    return Path\from_base("views", "$path.php");
 }
 
 function redirect($url)
