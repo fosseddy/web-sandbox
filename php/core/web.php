@@ -54,12 +54,12 @@ class Router
 function render_view($path, $vars = [])
 {
     extract($vars);
-    require_once Path\from_base("views", "$path.php");
+    require_once path\from_base("views", "$path.php");
 }
 
 function partial_view($path)
 {
-    return Path\from_base("views", "$path.php");
+    return path\from_base("views", "$path.php");
 }
 
 function redirect($url)
