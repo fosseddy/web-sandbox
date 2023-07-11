@@ -7,8 +7,9 @@ namespace web;
 require_once __DIR__ . "/path.php";
 require_once __DIR__ . "/http.php";
 
-use Exception;
 use path, http;
+
+// TODO(art): add app middleware?
 
 class App
 {
