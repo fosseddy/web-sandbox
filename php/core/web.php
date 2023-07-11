@@ -14,6 +14,7 @@ use path, http;
 class App
 {
     public $routes = [];
+    public $middleware = [];
     public $ctx = [];
 
     function add_router(Router $r, string $namespace = ""): void
@@ -32,18 +33,37 @@ class App
         }
     }
 
+    function add_middleware(array $ms): void
+    {
+        foreach ($ms as $m)
+        {
+            $this->middleware[] = $m;
+        }
+    }
+
     function handle_request(): void
     {
         $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
         $method = $_SERVER["REQUEST_METHOD"];
 
+        if ($method === "POST" && isset($_POST["_method"]))
+        {
+            // TODO(art): validate method name?
+            $method = strtoupper($_POST["_method"]);
+        }
+
         $route = $this->routes[$uri][$method] ?? null;
 
         if (!$route) throw new http\Not_Found("route '$method $uri' does not exist");
 
-        foreach ($route["middleware"] as $it)
+        foreach ($this->middleware as $m)
         {
-            $it($this->ctx);
+            $m($this->ctx);
+        }
+
+        foreach ($route["middleware"] as $m)
+        {
+            $m($this->ctx);
         }
 
         $route["handler"]($this->ctx);
@@ -80,20 +100,37 @@ class Router
     {
         $this->add("POST", $uri, $handler, $middleware);
     }
+
+    function put(string $uri, callable $handler, array $middleware = []): void
+    {
+        $this->add("PUT", $uri, $handler, $middleware);
+    }
+
+    function patch(string $uri, callable $handler,
+                   array $middleware = []): void
+    {
+        $this->add("PATCH", $uri, $handler, $middleware);
+    }
+
+    function delete(string $uri, callable $handler,
+                    array $middleware = []): void
+    {
+        $this->add("DELETE", $uri, $handler, $middleware);
+    }
 }
 
-function render_view($path, $vars = [])
+function render_view(string $path, array $vars = []): void
 {
     extract($vars);
     require_once path\from_base("views", "$path.php");
 }
 
-function partial_view($path)
+function partial_view(string $path): string
 {
     return path\from_base("views", "$path.php");
 }
 
-function redirect($url)
+function redirect(string $url): void
 {
     header("Location: $url");
 }
