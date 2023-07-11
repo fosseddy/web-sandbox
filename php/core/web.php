@@ -17,12 +17,22 @@ class App
 
     function add_router(Router $r, string $namespace = ""): void
     {
-        $this->routes = [...$this->routes, ...$r->routes];
+        if ($namespace)
+        {
+            foreach (array_keys($r->routes) as $uri)
+            {
+                $ns_uri = prepend_namespace($namespace, $uri);
+                $this->routes[$ns_uri] = $r->routes[$uri];
+            }
+        }
+        else
+        {
+            $this->routes = [...$this->routes, ...$r->routes];
+        }
     }
 
     function handle_request(): void
     {
-        var_dump(parse_url($_SERVER["REQUEST_URI"]));exit;
         $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
         $method = $_SERVER["REQUEST_METHOD"];
 
@@ -50,22 +60,22 @@ class Router
     }
 
     function add(string $method, string $uri, callable $handler,
-                 array/*callable*/ $middleware = []): void
+                 array $middleware = []): void
     {
+        if ($this->namespace) $uri = prepend_namespace($this->namespace, $uri);
+
         $this->routes[$uri][$method] = [
             "handler" => $handler,
             "middleware" => $middleware
         ];
     }
 
-    function get(string $uri, callable $handler,
-                 array/*callable*/ $middleware = []): void
+    function get(string $uri, callable $handler, array $middleware = []): void
     {
         $this->add("GET", $uri, $handler, $middleware);
     }
 
-    function post(string $uri, callable $handler,
-                  array/*callable*/ $middleware = []): void
+    function post(string $uri, callable $handler, array $middleware = []): void
     {
         $this->add("POST", $uri, $handler, $middleware);
     }
@@ -85,4 +95,10 @@ function partial_view($path)
 function redirect($url)
 {
     header("Location: $url");
+}
+
+function prepend_namespace(string $ns, string $uri): string
+{
+    if ($uri === "/") return $ns;
+    return $ns . $uri;
 }
