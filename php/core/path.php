@@ -2,8 +2,8 @@
 
 namespace path;
 
-// NOTE(art): BASE_DIR is defined by user
-function from_base(...$path)
+// NOTE(art): BASE_DIR must be defined by user
+function from_base(string ...$path): string
 {
     return join(DIRECTORY_SEPARATOR, [BASE_DIR, ...$path]);
 }

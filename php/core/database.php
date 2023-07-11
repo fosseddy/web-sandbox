@@ -4,7 +4,7 @@ namespace database;
 
 use PDO;
 
-function connect($host, $dbname, $user, $pass)
+function connect(string $host, string $dbname, string $user, string $pass): PDO
 {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -18,20 +18,22 @@ class Connection
     public $pdo;
     public $stmt;
 
-    function __construct($host, $dbname, $user, $pass)
+    function __construct(string $host, string $dbname,
+                         string $user, string $pass)
     {
         $this->pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
         $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    function exec($q, $vals = [])
+    function exec(string $q, array $vals = []): void
     {
         $this->stmt = $this->pdo->prepare($q);
         $this->stmt->execute($vals);
     }
 
-    function query($q, $vals = [], $container = null)
+    function query(string $q, array|string|object $vals = [],
+                   string|object $container = null): void
     {
         if (gettype($vals) !== "array")
         {
@@ -49,13 +51,15 @@ class Connection
         }
     }
 
-    function query_one($q, $vals = [], $container = null)
+    function query_one(string $q, array|string|object $vals = [],
+                       string|object $container = null): mixed
     {
         $this->query($q, $vals, $container);
         return $this->stmt->fetch();
     }
 
-    function query_many($q, $vals = [], $container = null)
+    function query_many(string $q, array|string|object $vals = [],
+                        string|object $container = null): array
     {
         $this->query($q, $vals, $container);
         return $this->stmt->fetchAll();
