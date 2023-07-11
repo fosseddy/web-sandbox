@@ -146,8 +146,7 @@ function validate_credentials(string $name, string $pass): array
     // at least 3 chars long; starts with alpha then word
     if (!preg_match("/^[a-zA-Z]{1}\w{2,}$/", $name))
     {
-        $errors[] = "name must start with a letter and " .
-            "be at least 3 characters long";
+        $errors[] = "name must start with a letter and be at least 3 characters long";
     }
 
     if (strlen($pass) < 6)
