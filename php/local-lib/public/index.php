@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 const BASE_DIR = __DIR__ . "/..";
 const CORE_DIR = BASE_DIR . "/../core";
 
@@ -19,10 +21,12 @@ require_once path\from_base("authors.php");
 require_once path\from_base("genres.php");
 require_once path\from_base("book-instances.php");
 
-$router = new web\Router();
-$router->ctx = [
+$app = new web\App();
+$app->ctx = [
     "db" => new database\Connection("localhost", "local_lib", "art", "qweqwe123")
 ];
+
+$router = new web\Router();
 
 $router->get("/", "home\handle_index");
 
@@ -44,9 +48,11 @@ $router->post("/genres/create", "genres\handle_store");
 $router->get("/book-instances", "book_instances\handle_index");
 $router->get("/book-instances/detail", "book_instances\handle_detail", ["with_query_id"]);
 
+$app->add_router($router);
+
 try
 {
-    $router->resolve();
+    $app->handle_request();
 }
 catch (http\Not_Found $e)
 {
