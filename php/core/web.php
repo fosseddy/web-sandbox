@@ -10,31 +10,19 @@ require_once __DIR__ . "/http.php";
 use Exception;
 use path, http;
 
-class Router
+class App
 {
     public $routes = [];
     public $ctx = [];
 
-    function add($method, $uri, $handler, $middleware = [])
+    function add_router(Router $r, string $namespace = ""): void
     {
-        $this->routes[$uri][$method] = [
-            "handler" => $handler,
-            "middleware" => $middleware
-        ];
+        $this->routes = [...$this->routes, ...$r->routes];
     }
 
-    function get($uri, $handler, $middleware = [])
+    function handle_request(): void
     {
-        $this->add("GET", $uri, $handler, $middleware);
-    }
-
-    function post($uri, $handler, $middleware = [])
-    {
-        $this->add("POST", $uri, $handler, $middleware);
-    }
-
-    function resolve()
-    {
+        var_dump(parse_url($_SERVER["REQUEST_URI"]));exit;
         $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
         $method = $_SERVER["REQUEST_METHOD"];
 
@@ -48,6 +36,38 @@ class Router
         }
 
         $route["handler"]($this->ctx);
+    }
+}
+
+class Router
+{
+    public $namespace = "";
+    public $routes = [];
+
+    function __construct(string $ns = "")
+    {
+        $this->namespace = $ns;
+    }
+
+    function add(string $method, string $uri, callable $handler,
+                 array/*callable*/ $middleware = []): void
+    {
+        $this->routes[$uri][$method] = [
+            "handler" => $handler,
+            "middleware" => $middleware
+        ];
+    }
+
+    function get(string $uri, callable $handler,
+                 array/*callable*/ $middleware = []): void
+    {
+        $this->add("GET", $uri, $handler, $middleware);
+    }
+
+    function post(string $uri, callable $handler,
+                  array/*callable*/ $middleware = []): void
+    {
+        $this->add("POST", $uri, $handler, $middleware);
     }
 }
 
