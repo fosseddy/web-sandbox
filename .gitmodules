@@ -1,0 +1,3 @@
+[submodule "php/core"]
+	path = php/core
+	url = git@github.com:fosseddy/php-libs.git
