@@ -2,7 +2,7 @@
 
 namespace home;
 
-use web;
+use view;
 
 function handle_index($ctx)
 {
@@ -17,7 +17,7 @@ function handle_index($ctx)
         "select count(*) as count from book_instance where status = 0"
     );
 
-    web\render_view("index", [
+    view\render("index", [
         "title" => "Local Library Home",
         "book" => $book,
         "book_instance" => $bi,

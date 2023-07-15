@@ -2,7 +2,7 @@
 
 namespace authors;
 
-use web, http;
+use view, http;
 
 class Model
 {
@@ -49,7 +49,7 @@ function handle_index($ctx)
         "authors\Model"
     );
 
-    web\render_view("authors/index", [
+    view\render("authors/index", [
         "title" => "Author List",
         "authors" => $authors
     ]);
@@ -75,7 +75,7 @@ function handle_detail($ctx)
         "books\Model"
     );
 
-    web\render_view("authors/detail", [
+    view\render("authors/detail", [
         "title" => "Author Detail",
         "author" => $author,
         "books" => $books
@@ -84,7 +84,7 @@ function handle_detail($ctx)
 
 function handle_create($ctx)
 {
-    web\render_view("authors/create", ["title" => "Create Author"]);
+    view\render("authors/create", ["title" => "Create Author"]);
 }
 
 function handle_store($ctx)
@@ -102,7 +102,7 @@ function handle_store($ctx)
 
     if ($errors)
     {
-        web\render_view("authors/create", [
+        view\render("authors/create", [
             "title" => "Create Author",
             "author" => $a,
             "errors" => $errors
@@ -119,7 +119,7 @@ function handle_store($ctx)
     {
         $errors[] = "This author already exist";
 
-        web\render_view("authors/create", [
+        view\render("authors/create", [
             "title" => "Create Author",
             "author" => $a,
             "errors" => $errors
@@ -136,6 +136,6 @@ function handle_store($ctx)
         [$a->first_name, $a->family_name, $a->date_of_birth, $a->date_of_death]
     );
 
-    $a->id = $db->pdo->lastInsertId();
-    web\redirect($a->url());
+    $a->id = $db->last_id();
+    http\redirect($a->url());
 }

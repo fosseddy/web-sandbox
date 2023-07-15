@@ -13,6 +13,9 @@ function debug($val)
 }
 
 require_once CORE_DIR . "/web.php";
+require_once CORE_DIR . "/view.php";
+require_once CORE_DIR . "/path.php";
+require_once CORE_DIR . "/http.php";
 require_once CORE_DIR . "/database.php";
 
 require_once path\from_base("auth.php");
@@ -26,7 +29,7 @@ $app->ctx = [
 $app->add_router(auth\router());
 $app->add_router(dashboard\router());
 
-$app->add_middleware(["auth\attach_user"]);
+$app->middleware = ["auth\attach_user"];
 
 try
 {

@@ -3,7 +3,7 @@
 namespace books;
 
 use PDOException;
-use web, http, authors;
+use view, http, authors;
 
 class Model
 {
@@ -48,7 +48,7 @@ function handle_index($ctx)
         $books[] = $b;
     }
 
-    web\render_view("books/index", [
+    view\render("books/index", [
         "title" => "Book List",
         "books" => $books
     ]);
@@ -95,7 +95,7 @@ function handle_detail($ctx)
         "genres\Model"
     );
 
-    web\render_view("books/detail", [
+    view\render("books/detail", [
         "title" => "Book Detail",
         "book" => $book,
         "book_instances" => $book_instances,
@@ -114,7 +114,7 @@ function handle_create($ctx)
 
     $genres = $db->query_many("select id, name from genre", "genres\Model");
 
-    web\render_view("books/create", [
+    view\render("books/create", [
         "title" => "Create Book",
         "authors" => $authors,
         "genres" => $genres
@@ -152,7 +152,7 @@ function handle_store($ctx)
 
         $genres = $db->query_many("select id, name from genre", "genres\Model");
 
-        web\render_view("books/create", [
+        view\render("books/create", [
             "title" => "Create Book",
             "book" => $b,
             "authors" => $authors,
@@ -168,7 +168,7 @@ function handle_store($ctx)
     {
         $errors[] = "Book with this ISBN already exist";
 
-        web\render_view("books/create", [
+        view\render("books/create", [
             "title" => "Create Book",
             "book" => $b,
             "authors" => $authors,
@@ -178,7 +178,7 @@ function handle_store($ctx)
         exit;
     }
 
-    $db->pdo->beginTransaction();
+    $db->transaction();
     try
     {
         $db->exec(
@@ -187,7 +187,7 @@ function handle_store($ctx)
             [$b->title, $b->author_id, $b->summary, $b->ISBN],
         );
 
-        $b->id = $db->pdo->lastInsertId();
+        $b->id = $db->last_id();
 
         $sql = "insert into book_genres (book_id, genre_id) values ";
         $binds = [];
@@ -204,9 +204,9 @@ function handle_store($ctx)
     }
     catch (PDOException $e)
     {
-        $db->pdo->rollBack();
+        $db->rollback();
         throw $e;
     }
 
-    web\redirect($b->url());
+    http\redirect($b->url());
 }

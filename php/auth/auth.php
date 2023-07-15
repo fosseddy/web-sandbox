@@ -2,7 +2,7 @@
 
 namespace auth;
 
-use web;
+use web, view, http;
 
 const COOKIE_NAME = "session";
 const SECRET = "secret_string"; // TODO(art): this must be env variable;
@@ -31,7 +31,7 @@ function router(): web\Router
 
 function handle_login(array $ctx): void
 {
-    web\render_view("index", ["title" => "Login"]);
+    view\render("index", ["title" => "Login"]);
 }
 
 function handle_login_post(array $ctx): void
@@ -43,7 +43,7 @@ function handle_login_post(array $ctx): void
 
     if ($errors)
     {
-        web\render_view("index", [
+        view\render("index", [
             "title" => "Login",
             "name" => $name,
             "errors" => $errors
@@ -59,7 +59,7 @@ function handle_login_post(array $ctx): void
 
     if (!$user)
     {
-        web\render_view("index", [
+        view\render("index", [
             "title" => "Login",
             "name" => $name,
             "errors" => ["user does not exist"]
@@ -69,7 +69,7 @@ function handle_login_post(array $ctx): void
 
     if (!password_verify($pass, $user->password))
     {
-        web\render_view("index", [
+        view\render("index", [
             "title" => "Login",
             "name" => $name,
             "errors" => ["wrong password"]
@@ -78,12 +78,12 @@ function handle_login_post(array $ctx): void
     }
 
     create_session($user->id);
-    web\redirect("/dashboard");
+    http\redirect("/dashboard");
 }
 
 function handle_register(): void
 {
-    web\render_view("register", ["title" => "Register"]);
+    view\render("register", ["title" => "Register"]);
 }
 
 function handle_register_post(array $ctx): void
@@ -95,7 +95,7 @@ function handle_register_post(array $ctx): void
 
     if ($errors)
     {
-        web\render_view("register", [
+        view\render("register", [
             "title" => "Register",
             "name" => $name,
             "errors" => $errors
@@ -107,7 +107,7 @@ function handle_register_post(array $ctx): void
 
     if ($user)
     {
-        web\render_view("register", [
+        view\render("register", [
             "title" => "Register",
             "name" => $name,
             "errors" => ["user already exist"]
@@ -120,14 +120,14 @@ function handle_register_post(array $ctx): void
         [$name, password_hash($pass, PASSWORD_BCRYPT)]
     );
 
-    create_session($ctx["db"]->pdo->lastInsertId());
-    web\redirect("/dashboard");
+    create_session($ctx["db"]->last_id());
+    http\redirect("/dashboard");
 }
 
 function handle_logout(array &$ctx)
 {
     destroy_session();
-    web\redirect("/");
+    http\redirect("/");
 }
 
 function validate_credentials(string $name, string $pass): array
@@ -198,7 +198,7 @@ function only_guest(array $ctx): void
 
     if ($user)
     {
-        web\redirect("/dashboard");
+        http\redirect("/dashboard");
         exit;
     }
 }
@@ -209,7 +209,7 @@ function only_user(array $ctx): void
 
     if (!$user)
     {
-        web\redirect("/");
+        http\redirect("/");
         exit;
     }
 }

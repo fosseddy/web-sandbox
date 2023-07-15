@@ -1,4 +1,4 @@
-<?php require_once web\partial_view("layout/head") ?>
+<?php require_once view\partial("layout/head") ?>
 
 <h1>Genre: <?= $genre->name ?></h1>
 
@@ -16,4 +16,4 @@
     </dl>
 </div>
 
-<?php require_once web\partial_view("layout/footer") ?>
+<?php require_once view\partial("layout/footer") ?>

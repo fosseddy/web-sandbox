@@ -13,6 +13,9 @@ function debug($val)
 }
 
 require_once CORE_DIR . "/web.php";
+require_once CORE_DIR . "/http.php";
+require_once CORE_DIR . "/view.php";
+require_once CORE_DIR . "/path.php";
 require_once CORE_DIR . "/database.php";
 
 require_once path\from_base("home.php");
@@ -26,29 +29,25 @@ $app->ctx = [
     "db" => new database\Connection("localhost", "local_lib", "art", "qweqwe123")
 ];
 
-$router = new web\Router();
+$app->router->get("/", "home\handle_index");
 
-$router->get("/", "home\handle_index");
+$app->router->get("/books", "books\handle_index");
+$app->router->get("/books/detail", "books\handle_detail", ["with_query_id"]);
+$app->router->get("/books/create", "books\handle_create");
+$app->router->post("/books/create", "books\handle_store");
 
-$router->get("/books", "books\handle_index");
-$router->get("/books/detail", "books\handle_detail", ["with_query_id"]);
-$router->get("/books/create", "books\handle_create");
-$router->post("/books/create", "books\handle_store");
+$app->router->get("/authors", "authors\handle_index");
+$app->router->get("/authors/detail", "authors\handle_detail", ["with_query_id"]);
+$app->router->get("/authors/create", "authors\handle_create");
+$app->router->post("/authors/create", "authors\handle_store");
 
-$router->get("/authors", "authors\handle_index");
-$router->get("/authors/detail", "authors\handle_detail", ["with_query_id"]);
-$router->get("/authors/create", "authors\handle_create");
-$router->post("/authors/create", "authors\handle_store");
+$app->router->get("/genres", "genres\handle_index");
+$app->router->get("/genres/detail", "genres\handle_detail", ["with_query_id"]);
+$app->router->get("/genres/create", "genres\handle_create");
+$app->router->post("/genres/create", "genres\handle_store");
 
-$router->get("/genres", "genres\handle_index");
-$router->get("/genres/detail", "genres\handle_detail", ["with_query_id"]);
-$router->get("/genres/create", "genres\handle_create");
-$router->post("/genres/create", "genres\handle_store");
-
-$router->get("/book-instances", "book_instances\handle_index");
-$router->get("/book-instances/detail", "book_instances\handle_detail", ["with_query_id"]);
-
-$app->add_router($router);
+$app->router->get("/book-instances", "book_instances\handle_index");
+$app->router->get("/book-instances/detail", "book_instances\handle_detail", ["with_query_id"]);
 
 try
 {
@@ -57,12 +56,12 @@ try
 catch (http\Not_Found $e)
 {
     http_response_code(404);
-    web\render_view("error", ["title" => "Page Not Found"]);
+    view\render("error", ["title" => "Page Not Found"]);
 }
 catch (Exception $e)
 {
     http_response_code(500);
-    web\render_view("error", [
+    view\render("error", [
         "title" => "Something went wrong and it is not your fault"
     ]);
 }

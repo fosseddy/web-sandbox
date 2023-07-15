@@ -13,6 +13,9 @@ function debug($val)
 }
 
 require_once CORE_DIR . "/web.php";
+require_once CORE_DIR . "/http.php";
+require_once CORE_DIR . "/view.php";
+require_once CORE_DIR . "/path.php";
 require_once CORE_DIR . "/database.php";
 
 class Url
@@ -32,14 +35,12 @@ $app->ctx = [
     )
 ];
 
-$r = new web\Router();
-
-$r->get("/", function(array $ctx) {
+$app->router->get("/", function(array $ctx) {
     $id = htmlspecialchars(trim($_GET["id"] ?? ""));
 
     if (!$id)
     {
-        web\render_view("index");
+        view\render("index");
         exit;
     }
 
@@ -55,10 +56,10 @@ $r->get("/", function(array $ctx) {
         exit;
     }
 
-    web\redirect($url->long_url);
+    http\redirect($url->long_url);
 });
 
-$r->post("/", function(array $ctx) {
+$app->router->post("/", function(array $ctx) {
     $long_url = htmlspecialchars(trim($_POST["long-url"] ?? ""));
     $errors = [];
 
@@ -67,7 +68,7 @@ $r->post("/", function(array $ctx) {
 
     if ($errors)
     {
-        web\render_view("index", [
+        view\render("index", [
             "errors" => $errors,
             "long_url" => $long_url
         ]);
@@ -82,7 +83,7 @@ $r->post("/", function(array $ctx) {
 
     if ($url)
     {
-        web\render_view("index", ["url" => $url, "long_url" => $long_url]);
+        view\render("index", ["url" => $url, "long_url" => $long_url]);
         exit;
     }
 
@@ -97,10 +98,8 @@ $r->post("/", function(array $ctx) {
 
     $url->id = $ctx["db"]->pdo->lastInsertId();
 
-    web\render_view("index", ["url" => $url, "long_url" => $long_url]);
+    view\render("index", ["url" => $url, "long_url" => $long_url]);
 });
-
-$app->add_router($r);
 
 try
 {

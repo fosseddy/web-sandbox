@@ -1,4 +1,4 @@
-<?php require_once web\partial_view("layout/head") ?>
+<?php require_once view\partial("layout/head") ?>
 
 <h1><?= $title ?></h1>
 
@@ -20,4 +20,4 @@
     </ul>
 <?php endif ?>
 
-<?php require_once web\partial_view("layout/footer") ?>
+<?php require_once view\partial("layout/footer") ?>

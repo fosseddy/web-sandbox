@@ -2,7 +2,7 @@
 
 namespace book_instances;
 
-use web, http, books;
+use view, http, books;
 
 class Model
 {
@@ -63,7 +63,7 @@ function handle_index($ctx)
         $book_instances[] = $bi;
     }
 
-    web\render_view("book-instances/index", [
+    view\render("book-instances/index", [
         "title" => "Book Instances List",
         "book_instances" => $book_instances
     ]);
@@ -96,7 +96,7 @@ function handle_detail($ctx)
     $bi->book->title = $data["title"];
     $bi->book->id = $data["b_id"];
 
-    web\render_view("book-instances/detail", [
+    view\render("book-instances/detail", [
         "title" => "Book:",
         "book_instance" => $bi
     ]);

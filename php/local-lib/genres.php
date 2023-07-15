@@ -2,7 +2,7 @@
 
 namespace genres;
 
-use web, http;
+use http, view;
 
 class Model
 {
@@ -24,7 +24,7 @@ function handle_index($ctx)
         "genres\Model"
     );
 
-    web\render_view("genres/index", [
+    view\render("genres/index", [
         "title" => "Genre List",
         "genres" => $genres
     ]);
@@ -51,7 +51,7 @@ function handle_detail($ctx)
         "books\Model"
     );
 
-    web\render_view("genres/detail", [
+    view\render("genres/detail", [
         "title" => "Genre Detail",
         "genre" => $genre,
         "books" => $books,
@@ -60,7 +60,7 @@ function handle_detail($ctx)
 
 function handle_create($ctx)
 {
-    web\render_view("genres/create", ["title" => "Create Genre"]);
+    view\render("genres/create", ["title" => "Create Genre"]);
 }
 
 function handle_store($ctx)
@@ -77,7 +77,7 @@ function handle_store($ctx)
 
     if ($errors)
     {
-        web\render_view("genres/create", [
+        view\render("genres/create", [
             "title" => "Create Genre",
             "genre" => $genre,
             "errors" => $errors
@@ -93,12 +93,12 @@ function handle_store($ctx)
 
     if ($genre->id)
     {
-        web\redirect($genre->url());
+        http\redirect($genre->url());
         exit;
     }
 
     $db->exec("insert into genre (name) values (?)", [$genre->name]);
 
-    $genre->id = $db->pdo->lastInsertId();
-    web\redirect($genre->url());
+    $genre->id = $db->last_id();
+    http\redirect($genre->url());
 }

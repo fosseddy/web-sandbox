@@ -2,7 +2,7 @@
 
 namespace dashboard;
 
-use web;
+use web, view;
 
 function router(): web\Router
 {
@@ -14,7 +14,7 @@ function router(): web\Router
 
 function handle_index(array $ctx): void
 {
-    web\render_view("dashboard", [
+    view\render("dashboard", [
         "title" => "Dashboard",
         "user" => $ctx["user"]
     ]);
