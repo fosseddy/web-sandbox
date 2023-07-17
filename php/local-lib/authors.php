@@ -67,7 +67,7 @@ function handle_detail($ctx)
         "authors\Model"
     );
 
-    if (!$author) throw new http\Not_Found();
+    if (!$author) throw new http\Error(404);
 
     $books = $db->query_many(
         "select id, title, summary from book where author_id = ?",

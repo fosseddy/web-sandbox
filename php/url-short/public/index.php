@@ -105,7 +105,7 @@ try
 {
     $app->handle_request();
 }
-catch (http\Not_Found $e)
+catch (http\Error $e)
 {
     http_response_code(404);
     echo "Page Not Found";

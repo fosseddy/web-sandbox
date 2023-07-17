@@ -68,7 +68,7 @@ function handle_detail($ctx)
         [$book_id]
     );
 
-    if (!$data) throw new http\Not_Found();
+    if (!$data) throw new http\Error(404);
 
     $book = new Model();
     $book->author = new Authors\Model();

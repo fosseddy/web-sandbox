@@ -53,10 +53,12 @@ try
 {
     $app->handle_request();
 }
-catch (http\Not_Found $e)
+catch (http\Error $e)
 {
-    http_response_code(404);
-    view\render("error", ["title" => "Page Not Found"]);
+    http_response_code($e->status_code);
+    view\render("error", [
+        "title" => $e->getMessage() ?: "Something went wrong"
+    ]);
 }
 catch (Exception $e)
 {
@@ -69,5 +71,5 @@ catch (Exception $e)
 function with_query_id()
 {
     $id = $_GET["id"] ?? "";
-    if (!$id) throw new http\Not_Found();
+    if (!$id) throw new http\Error(400);
 }

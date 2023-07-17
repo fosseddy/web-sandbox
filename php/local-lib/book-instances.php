@@ -83,7 +83,7 @@ function handle_detail($ctx)
         [$book_instance_id]
     );
 
-    if (!$data) throw new http\Not_Found();
+    if (!$data) throw new http\Error(404);
 
     $bi = new Model();
     $bi->book = new Books\Model();

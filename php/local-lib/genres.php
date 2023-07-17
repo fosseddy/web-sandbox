@@ -41,7 +41,7 @@ function handle_detail($ctx)
         "genres\Model"
     );
 
-    if (!$genre) throw new http\Not_Found();
+    if (!$genre) throw new http\Error(404);
 
     $books = $db->query_many(
         "select B.id, B.title, B.summary from book as B
