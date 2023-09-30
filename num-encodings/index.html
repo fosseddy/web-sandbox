@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Encodings</title>
+    <style>
+        .error { background: red; }
+        .active { background: green; }
+    </style>
+</head>
+<body>
+    <div>
+        <button id="bitsize-8">8</button>
+        <button id="bitsize-16">16</button>
+        <button id="bitsize-32">32</button>
+        <button id="bitsize-64">64</button>
+    </div>
+
+    <form>
+        <label>Unsigned <input id="uint-input"></label>
+        <label>Signed <input id="sint-input"></label>
+        <label>Hex <input id="hex-input"></label>
+        <label>Binary <input id="bin-input"></label>
+        <label>Octal <input id="oct-input"></label>
+    </form>
+
+    <div>
+        <p>Unsigned: <span id="uint-info"></span></p>
+        <p>Signed: <span id="sint-info"></span></p>
+        <p>Hex: <span id="hex-info"></span></p>
+        <p>Binary: <span id="bin-info"></span></p>
+        <p>Octal: <span id="oct-info"></span></p>
+    </div>
+
+    <script src="integers.js"></script>
+</body>
+</html>
